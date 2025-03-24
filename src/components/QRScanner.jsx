@@ -1,27 +1,25 @@
-import React, { useEffect, useRef } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import React, { useState } from "react";
+import { startQRScanner, uploadQRImage } from "../utils/qrUtils";
 
 const QRScanner = ({ onScan }) => {
-  const scannerRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  useEffect(() => {
-    const scanner = new Html5QrcodeScanner("qr-reader", {
-      fps: 10,
-      qrbox: 250,
-    });
+  // 📌 Xử lý khi chọn ảnh từ máy tính
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      uploadQRImage(file, onScan);
+    }
+  };
 
-    scanner.render(
-      (decodedText) => {
-        onScan(decodedText);
-        scanner.clear();
-      },
-      (error) => console.log("QR Scan Error:", error)
-    );
-
-    return () => scanner.clear();
-  }, [onScan]);
-
-  return <div id="qr-reader" ref={scannerRef}></div>;
+  return (
+    <div>
+      <div id="qr-reader"></div>
+      <button onClick={() => startQRScanner(onScan)}>Quét QR Code</button>
+      <input type="file" accept="image/*" onChange={handleFileChange} />
+    </div>
+  );
 };
 
 export default QRScanner;

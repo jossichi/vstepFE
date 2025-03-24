@@ -1,15 +1,21 @@
-const BASE_URL = process.env.REACT_APP_API_URL + "/api";
+const BASE_URL =
+  (process.env.REACT_APP_API_URL || "https://vstep-be.onrender.com") + "/api";
 
 const authService = {
   loginWithQR: async (qrData) => {
-    const response = await fetch(`${BASE_URL}/api/login`, {
+    console.log("🔹 Sending QR data:", qrData);
+
+    const response = await fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ qrCode: qrData }),
     });
 
-    if (!response.ok) throw new Error("Invalid QR Code");
-    return response.json();
+    const result = await response.json();
+    console.log("✅ Response from server:", result);
+
+    if (!response.ok) throw new Error(result.message || "Invalid QR Code");
+    return result;
   },
 };
 
