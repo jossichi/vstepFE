@@ -5,7 +5,7 @@ import mockQuizData from "../utils/mockQuizData"; // Điều chỉnh đường d
 
 const ExamPage = () => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
   const [quizData, setQuizData] = useState(null);
   const [userAnswers, setUserAnswers] = useState({
     reading: {},
@@ -21,7 +21,7 @@ const ExamPage = () => {
     };
 
     loadMockData();
-    
+
     // Bỏ comment đoạn code dưới đây nếu muốn quay lại gọi API thực tế
     /*
     const fetchQuizData = async () => {
@@ -128,9 +128,7 @@ const ExamPage = () => {
                     <div className="short-answer-container">
                       <input
                         type="text"
-                        value={
-                          userAnswers.reading[question.question_id] || ""
-                        }
+                        value={userAnswers.reading[question.question_id] || ""}
                         onChange={(e) =>
                           handleAnswerChange(
                             "reading",
