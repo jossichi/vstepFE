@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { startQRScanner, uploadQRImage } from "../utils/qrUtils";
+import { startQRScanner, uploadQRImage } from "../utils/qrUtils.js";
 
 const QRScanner = ({ onScan }) => {
   const [selectedFile, setSelectedFile] = useState(null);

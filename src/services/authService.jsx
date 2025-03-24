@@ -3,19 +3,14 @@ const BASE_URL =
 
 const authService = {
   loginWithQR: async (qrData) => {
-    console.log("🔹 Sending QR data:", qrData);
-
     const response = await fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ qrCode: qrData }),
     });
 
-    const result = await response.json();
-    console.log("✅ Response from server:", result);
-
-    if (!response.ok) throw new Error(result.message || "Invalid QR Code");
-    return result;
+    if (!response.ok) throw new Error("Invalid QR Code");
+    return response.json();
   },
 };
 
