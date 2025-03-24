@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import '../../assets/Navbar.css';
+import "../../assets/Navbar.css";
 
 const NavBar = () => {
   return (
@@ -10,11 +10,14 @@ const NavBar = () => {
             MY APP
           </Link>
         </div>
-        
+
         {/* Add navigation links */}
         <div className="navbar-links">
           <Link className="nav-link" to="/tests">
             Test List
+          </Link>
+          <Link className="nav-link" to="/login">
+            Login
           </Link>
           <Link className="nav-link" to="/test-form">
             Test Form

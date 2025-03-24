@@ -31,10 +31,7 @@ const TestList = () => {
   return (
     <div className="testListContainer">
       <h2>Test Management</h2>
-      <button 
-        className="addTestButton" 
-        onClick={() => navigate("/tests/new")}
-      >
+      <button className="addTestButton" onClick={() => navigate("/tests/new")}>
         Add New Test
       </button>
 

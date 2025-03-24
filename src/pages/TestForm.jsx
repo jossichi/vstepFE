@@ -34,13 +34,13 @@ const TestForm = () => {
     try {
       setLoading(true);
       setError("");
-      
+
       if (id) {
         await testService.updateTest(id, test);
       } else {
         await testService.createTest(test);
       }
-      
+
       navigate("/tests");
     } catch (error) {
       console.error("Error saving test:", error);
@@ -58,9 +58,9 @@ const TestForm = () => {
     <div className="test-form-container">
       <div className="form-wrapper">
         <h2>{id ? "Edit Test" : "Create New Test"}</h2>
-        
+
         {error && <div className="error-message">{error}</div>}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="test_id">Test ID</label>
@@ -75,15 +75,14 @@ const TestForm = () => {
             />
             {id && <small>Test ID cannot be changed</small>}
           </div>
-          
+
           <div className="input-group">
             <label htmlFor="test_type">Test Type</label>
             <select
               id="test_type"
               value={test.test_type}
               onChange={(e) => setTest({ ...test, test_type: e.target.value })}
-              required
-            >
+              required>
               <option value="">Select Test Type</option>
               <option value="listening">Listening</option>
               <option value="reading">Reading</option>
@@ -91,15 +90,14 @@ const TestForm = () => {
               <option value="writing">Writing</option>
             </select>
           </div>
-          
+
           <div className="input-group">
             <label htmlFor="level">Level</label>
             <select
               id="level"
               value={test.level}
               onChange={(e) => setTest({ ...test, level: e.target.value })}
-              required
-            >
+              required>
               <option value="">Select Level</option>
               <option value="A1">A1 (Beginner)</option>
               <option value="A2">A2 (Elementary)</option>
@@ -109,20 +107,12 @@ const TestForm = () => {
               <option value="C2">C2 (Proficiency)</option>
             </select>
           </div>
-          
+
           <div className="button-group">
-            <button 
-              type="button" 
-              className="cancel-btn"
-              onClick={handleCancel}
-            >
+            <button type="button" className="cancel-btn" onClick={handleCancel}>
               Cancel
             </button>
-            <button 
-              type="submit" 
-              className="submit-btn"
-              disabled={loading}
-            >
+            <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? (
                 <span className="loading-spinner"></span>
               ) : id ? (
