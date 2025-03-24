@@ -1,0 +1,232 @@
+$primary-color: #3b82f6;
+$edit-color: #facc15;
+$delete-color: #ef4444;
+$hover-bg: #f8fafc;
+$border-color: #e2e8f0;
+$shadow-light: 0 4px 10px rgba(0, 0, 0, 0.08);
+$transition-default: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+.tableWrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.testTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: $shadow-light;
+  background: white;
+  
+  thead {
+    tr {
+      background: $primary-color;
+      
+      th {
+        padding: 16px;
+        text-align: center; // Canh giữa tiêu đề
+        color: white;
+        font-weight: 600;
+        font-size: 1.05rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        position: relative;
+        
+        &:not(:last-child)::after {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 25%;
+          height: 50%;
+          width: 1px;
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+  }
+  
+  tbody {
+    tr {
+      transition: $transition-default;
+      border-bottom: 1px solid $border-color;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background: $hover-bg;
+      }
+      
+      td {
+        padding: 16px;
+        font-size: 1rem;
+        vertical-align: middle;
+        border-top: 1px solid $border-color;
+        text-align: center; // Canh giữa nội dung trong các ô
+        
+        &:first-child {
+          font-weight: 600;
+          color: #334155;
+        }
+      }
+    }
+  }
+  
+  .actionColumn {
+    display: flex;
+    gap: 10px;
+    justify-content: center; // Canh giữa các nút hành động
+    align-items: center;
+  }
+  
+  .level-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    
+    &.level-beginner {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    
+    &.level-intermediate {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+    
+    &.level-advanced {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+  }
+  
+  .editButton, .deleteButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: $transition-default;
+    gap: 6px;
+    
+    i {
+      font-size: 1rem;
+    }
+  }
+  
+  .editButton {
+    background-color: $edit-color;
+    color: #854d0e;
+    
+    &:hover {
+      background-color: darken($edit-color, 10%);
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  .deleteButton {
+    background-color: $delete-color;
+    color: white;
+    
+    &:hover {
+      background-color: darken($delete-color, 10%);
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+.noTestsMessage {
+  text-align: center;
+  padding: 30px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-top: 20px;
+  
+  p {
+    color: #64748b;
+    font-size: 1.1rem;
+  }
+}
+
+// RESPONSIVE DESIGN
+@media (max-width: 768px) {
+  .testTable {
+    thead {
+      tr {
+        th {
+          padding: 12px;
+          font-size: 0.95rem;
+        }
+      }
+    }
+    
+    tbody {
+      tr {
+        td {
+          padding: 12px;
+          font-size: 0.95rem;
+        }
+      }
+    }
+    
+    .actionColumn {
+      flex-direction: column;
+      gap: 8px;
+      align-items: center; // Giữ canh giữa khi xếp các nút theo chiều dọc
+    }
+    
+    .editButton, .deleteButton {
+      width: 100%;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .testTable {
+    font-size: 0.85rem;
+    
+    thead {
+      tr {
+        th {
+          padding: 10px 8px;
+          font-size: 0.85rem;
+        }
+      }
+    }
+    
+    tbody {
+      tr {
+        td {
+          padding: 10px 8px;
+          font-size: 0.85rem;
+        }
+      }
+    }
+    
+    .level-badge {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+    }
+  }
+}

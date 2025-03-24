@@ -1,0 +1,56 @@
+/* Footer.css */
+.footer-simple {
+    padding: 40px 0;
+    text-align: center;
+    background-color: #ffffff;
+    color: #4b4c4d;
+    border-top: 1px solid #e0e0e0;
+}
+  
+.social-icons {
+    margin-bottom: 20px;
+}
+  
+.social-icons a {
+    display: inline-flex;  /* Thay đổi thành inline-flex */
+    justify-content: center;  /* Căn giữa theo chiều ngang */
+    align-items: center;  /* Căn giữa theo chiều dọc */
+    margin: 0 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    color: #4b4c4d;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icons ion-icon {
+    font-size: 20px;  /* Điều chỉnh kích thước icon */
+    color: #777;  /* Màu xám cho icon */
+}
+  
+.social-icons a:hover {
+    background-color: #f5f5f5;
+}
+  
+.footer-links {
+    margin-bottom: 20px;
+}
+  
+.footer-links a {
+    display: inline-block;
+    margin: 0 15px;
+    color: #4b4c4d;
+    text-decoration: none;
+    font-size: 16px;
+}
+  
+.footer-links a:hover {
+    color: #2c2c2c;
+}
+  
+.footer-copyright {
+    color: #aaa;
+    font-size: 14px;
+}

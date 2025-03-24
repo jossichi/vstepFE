@@ -1,0 +1,119 @@
+$primary-color: #3b82f6; // Modernized blue
+$secondary-color: #1d4ed8;
+$background-gradient: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd);
+$card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+$transition-default: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+.testListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background: $background-gradient;
+  padding: 30px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e40af;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    position: relative;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: $primary-color;
+      border-radius: 2px;
+    }
+  }
+  
+  .addTestButton {
+    background: $primary-color;
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: $transition-default;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    
+    &:hover {
+      background: $secondary-color;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  .testTableContainer {
+    width: 100%;
+    max-width: 1100px;
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: $card-shadow;
+    overflow: hidden;
+  }
+}
+
+// RESPONSIVE DESIGN
+@media (max-width: 768px) {
+  .testListContainer {
+    padding: 20px 15px;
+    
+    h2 {
+      font-size: 2rem;
+      
+      &:after {
+        width: 60px;
+      }
+    }
+    
+    .addTestButton {
+      font-size: 1rem;
+      padding: 10px 22px;
+    }
+    
+    .testTableContainer {
+      padding: 15px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .testListContainer {
+    padding: 15px 10px;
+    
+    h2 {
+      font-size: 1.6rem;
+      
+      &:after {
+        width: 50px;
+        height: 3px;
+      }
+    }
+    
+    .addTestButton {
+      font-size: 0.9rem;
+      padding: 8px 18px;
+    }
+    
+    .testTableContainer {
+      padding: 12px 8px;
+      border-radius: 12px;
+    }
+  }
+}

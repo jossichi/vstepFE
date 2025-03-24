@@ -1,0 +1,33 @@
+.navbar-container {
+    width: 100%;
+    position: relative;
+  }
+  
+  .navbar {
+    display: flex;
+    padding: 1rem 1rem; /* Tăng padding-top và padding-bottom từ 0.5rem lên 1rem */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 50px; /* Thêm chiều cao cố định */
+    align-items: center; /* Canh giữa các phần tử theo chiều dọc */
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+    color: #4a5568;
+    text-decoration: none;
+    font-size: 1.5rem; /* Tăng kích thước font từ 1.25rem lên 1.5rem */
+  }
+  
+  /* Hero Banner */
+  .hero-banner {
+    height: 500px;
+    background-image: url('https://mdbootstrap.com/img/new/slides/311.jpg');
+    background-size: cover;
+    background-position: center;
+    margin-top: 70px; /* Điều chỉnh margin-top theo chiều cao mới của navbar */
+  }

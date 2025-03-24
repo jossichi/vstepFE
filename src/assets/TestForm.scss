@@ -1,0 +1,275 @@
+// Variables
+$primary-color: #3b82f6;
+$secondary-color: #1d4ed8;
+$success-color: #10b981;
+$danger-color: #ef4444;
+$background-gradient: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd);
+$card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+$transition-default: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$border-radius: 12px;
+
+// Breakpoints
+$breakpoints: (
+  "small": 480px,
+  "medium": 768px,
+  "large": 1024px,
+);
+
+// Mixins
+@mixin responsive($size) {
+  @if map-has-key($breakpoints, $size) {
+    @media (max-width: map-get($breakpoints, $size)) {
+      @content;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Component Styling
+.test-form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: $background-gradient;
+  padding: 30px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+  .form-wrapper {
+    background: white;
+    padding: 35px;
+    border-radius: $border-radius;
+    box-shadow: $card-shadow;
+    width: 100%;
+    max-width: 500px;
+    animation: fadeIn 0.5s ease-out;
+    
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $secondary-color;
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: $primary-color;
+        border-radius: 2px;
+      }
+    }
+    
+    .error-message {
+      background-color: #fee2e2;
+      color: $danger-color;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 500;
+      border-left: 4px solid $danger-color;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        
+        label {
+          font-weight: 600;
+          color: #334155;
+          font-size: 1.05rem;
+        }
+        
+        input, select {
+          padding: 14px;
+          border: 2px solid #e2e8f0;
+          border-radius: 8px;
+          font-size: 1rem;
+          background-color: #f8fafc;
+          transition: $transition-default;
+          
+          &:hover {
+            border-color: #cbd5e1;
+          }
+          
+          &:focus {
+            border-color: $primary-color;
+            box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+            outline: none;
+            background-color: white;
+          }
+          
+          &:disabled {
+            background-color: #f1f5f9;
+            color: #64748b;
+            cursor: not-allowed;
+          }
+        }
+        
+        small {
+          color: #64748b;
+          font-size: 0.85rem;
+          margin-top: 4px;
+        }
+      }
+      
+      .button-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+        
+        button {
+          padding: 14px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: $transition-default;
+          flex: 1;
+          border: none;
+          
+          &.cancel-btn {
+            background-color: #f1f5f9;
+            color: #64748b;
+            
+            &:hover {
+              background-color: #e2e8f0;
+            }
+          }
+          
+          &.submit-btn {
+            background-color: $primary-color;
+            color: white;
+            position: relative;
+            
+            &:hover {
+              background-color: $secondary-color;
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba($primary-color, 0.4);
+            }
+            
+            &:active {
+              transform: translateY(0);
+            }
+            
+            &:disabled {
+              background-color: #93c5fd;
+              cursor: not-allowed;
+              transform: none;
+              box-shadow: none;
+            }
+            
+            .loading-spinner {
+              display: inline-block;
+              width: 20px;
+              height: 20px;
+              border: 3px solid rgba(255, 255, 255, 0.3);
+              border-radius: 50%;
+              border-top-color: white;
+              animation: spin 1s linear infinite;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Styling
+@include responsive("medium") {
+  .test-form-container {
+    padding: 20px 15px;
+    
+    .form-wrapper {
+      padding: 25px;
+      
+      h2 {
+        font-size: 1.8rem;
+      }
+      
+      form {
+        gap: 16px;
+        
+        .input-group {
+          label {
+            font-size: 0.95rem;
+          }
+          
+          input, select {
+            padding: 12px;
+          }
+        }
+        
+        .button-group button {
+          padding: 12px;
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }
+}
+
+@include responsive("small") {
+  .test-form-container {
+    padding: 15px 10px;
+    
+    .form-wrapper {
+      padding: 20px;
+      
+      h2 {
+        font-size: 1.5rem;
+        
+        &:after {
+          width: 60px;
+          height: 3px;
+        }
+      }
+      
+      form {
+        gap: 14px;
+        
+        .input-group {
+          label {
+            font-size: 0.9rem;
+          }
+          
+          input, select {
+            padding: 10px;
+            font-size: 0.9rem;
+          }
+        }
+        
+        .button-group {
+          flex-direction: column-reverse;
+          
+          button {
+            padding: 10px;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}
