@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "../../assets/Navbar.css";
-import Logout from "../components/Logout";
+import Logout from "../../pages/logout";
 const NavBar = () => {
   const isLoggedIn = localStorage.getItem("token");
   return (
