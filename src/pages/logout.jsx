@@ -16,7 +16,6 @@ const Logout = () => {
       // Gọi hàm logout từ utils
       const successMessage = await logout();
 
-      // Cập nhật trạng thái sau khi logout thành công
       setMessage(successMessage);
       setLoading(false);
     } catch (err) {
