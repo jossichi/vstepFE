@@ -3,23 +3,36 @@ import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login";
 import TestList from "./pages/TestList";
 import TestForm from "./pages/TestForm";
-import ExamPage from "./pages/ExamPage"; 
+import ExamPage from "./pages/ExamPage";
 import Header from "./components/Layouts/Header";
 import Footer from "./components/Layouts/Footer";
-
+import Logout from "./pages/logout";
+import CreateCards from "./components/CreateCards";
 const App = () => {
+  const isLoggedIn = localStorage.getItem("token");
+
   return (
     <AuthProvider>
       <Router>
         <div className="app">
-          <Header /> 
+          <Header />
           <div className="content">
             <Routes>
+              {/* Nếu đã đăng nhập, cho phép route /logout */}
+              {isLoggedIn ? (
+                <>
+                  <Route path="/logout" element={<Logout />} />
+                  <Route path="/" element={<TestList />} />
+                </>
+              ) : (
+                // Nếu chưa đăng nhập, điều hướng về login
+                <Route path="/" element={<Login />} />
+              )}{" "}
+              <Route path="/create-card" element={<CreateCards />} />
               <Route path="/login" element={<Login />} />
               <Route path="/tests" element={<TestList />} />
               <Route path="/test-form" element={<TestForm />} />
-              <Route path="/exam" element={<ExamPage />} /> 
-              <Route path="/" element={<Login />} />
+              <Route path="/exam" element={<ExamPage />} />
             </Routes>
           </div>
           <Footer />

@@ -9,8 +9,15 @@ const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      // Gọi service logout và truyền `card_id` từ localStorage (hoặc từ context nếu có)
-      const response = await authService.logout();
+      // Kiểm tra token trước khi logout
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found. Please login first.");
+      }
+      console.log("Token found:", token);
+
+      // Gọi service logout
+      const response = await authService.logout(); // Gọi API logout
 
       // Xóa dữ liệu người dùng khỏi localStorage
       localStorage.clear();
@@ -28,7 +35,11 @@ const LogoutButton = () => {
     }
   };
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return (
+    <button className="nav-link" onClick={handleLogout}>
+      Logout
+    </button>
+  );
 };
 
 export default LogoutButton;

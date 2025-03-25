@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
+import LogoutButton from "../LogoutButton"; // Đảm bảo bạn đã import đúng LogoutButton
 import "../../assets/Navbar.css";
-import Logout from "../../pages/logout";
+
 const NavBar = () => {
-  const isLoggedIn = localStorage.getItem("token");
   return (
     <nav className="navbar fixed-top navbar-light bg-light">
       <div className="container-fluid justify-content-between">
@@ -25,8 +25,10 @@ const NavBar = () => {
           </Link>
           <Link className="nav-link" to="/exam">
             ExamPage
-          </Link>{" "}
-          {isLoggedIn && <Logout />}
+          </Link>
+
+          {/* Add the Logout button here */}
+          <LogoutButton />
         </div>
       </div>
     </nav>
