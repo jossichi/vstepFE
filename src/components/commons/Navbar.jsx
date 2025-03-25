@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import "../../assets/Navbar.css";
-
+import Logout from "../components/Logout";
 const NavBar = () => {
+  const isLoggedIn = localStorage.getItem("token");
   return (
     <nav className="navbar fixed-top navbar-light bg-light">
       <div className="container-fluid justify-content-between">
@@ -24,7 +25,8 @@ const NavBar = () => {
           </Link>
           <Link className="nav-link" to="/exam">
             ExamPage
-          </Link>
+          </Link>{" "}
+          {isLoggedIn && <Logout />}
         </div>
       </div>
     </nav>
