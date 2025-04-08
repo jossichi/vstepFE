@@ -1,0 +1,101 @@
+/* QRScanner.css */
+
+.qr-scanner-container {
+    padding: 3rem; /* Tăng padding để tạo khoảng trống */
+    max-width: 50rem; /* Tăng kích thước container */
+    margin: 4rem auto; /* Tăng margin để tạo khoảng trống xung quanh */
+    border-radius: 15px; /* Bo tròn góc nhiều hơn */
+    background-color: #f8f9fa; /* Màu nền nhạt hơn */
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12); /* Tăng độ bóng */
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .qr-scanner-container:hover {
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.15);
+  }
+  
+  .qr-reader {
+    margin-bottom: 2.5rem; /* Tăng margin bottom */
+    border: 2px solid #e9ecef; /* Màu border nhạt hơn */
+    padding: 2rem; /* Tăng padding */
+    border-radius: 12px; /* Bo tròn góc nhiều hơn */
+    min-height: 300px; /* Tăng chiều cao tối thiểu */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff; /* Màu nền trắng */
+  }
+  
+  .scan-button {
+    background-color: #6366f1; /* Màu tím nhạt hơn */
+    color: #ffffff;
+    padding: 16px 28px; /* Tăng padding */
+    border-radius: 12px; /* Bo tròn góc nhiều hơn */
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem; /* Tăng kích thước font */
+    margin: 1.5rem auto; /* Tăng margin */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    max-width: 380px; /* Tăng kích thước nút */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15); /* Tăng độ bóng */
+  }
+  
+  .scan-button:hover {
+    background-color: #818cf8; /* Màu tím sáng hơn khi hover */
+    transform: translateY(-3px); /* Hiệu ứng nâng lên */
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  }
+  
+  .scan-button:active {
+    background-color: #4f46e5; /* Màu tím đậm hơn khi active */
+    transform: translateY(1px);
+  }
+  
+  .error-message {
+    color: #e53e3e; /* Màu đỏ đậm hơn */
+    margin-top: 2rem; /* Tăng margin top */
+    font-weight: 600; /* In đậm */
+    font-size: 1.1rem; /* Tăng kích thước font */
+  }
+  
+  .loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem; /* Tăng margin top */
+    color: #6366f1;
+    font-weight: 600; /* In đậm */
+  }
+  
+  .loader {
+    border: 5px solid rgba(99, 102, 241, 0.2); /* Màu loader nhạt hơn */
+    border-radius: 50%;
+    border-top: 5px solid #6366f1; /* Màu loader đậm hơn */
+    width: 40px; /* Tăng kích thước loader */
+    height: 40px; /* Tăng kích thước loader */
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem; /* Tăng margin bottom */
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .qr-scanner-container {
+      padding: 2rem;
+      max-width: 90%;
+    }
+  
+    .scan-button {
+      max-width: 100%;
+    }
+  }
