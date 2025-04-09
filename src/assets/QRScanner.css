@@ -1,101 +1,299 @@
-/* QRScanner.css */
+/* Variables */
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #1d4ed8;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --border-radius: 12px;
+  --transition-default: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+/* QR Scanner Container */
 .qr-scanner-container {
-    padding: 3rem; /* Tăng padding để tạo khoảng trống */
-    max-width: 50rem; /* Tăng kích thước container */
-    margin: 4rem auto; /* Tăng margin để tạo khoảng trống xung quanh */
-    border-radius: 15px; /* Bo tròn góc nhiều hơn */
-    background-color: #f8f9fa; /* Màu nền nhạt hơn */
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12); /* Tăng độ bóng */
-    text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd);
+  padding: 30px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Scanner Wrapper */
+.scanner-wrapper {
+  background: white;
+  padding: 35px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 500px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Header */
+.scanner-wrapper h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  text-align: center;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.scanner-wrapper h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--primary-color);
+  border-radius: 2px;
+}
+
+/* QR Reader Area */
+.qr-reader-area {
+  width: 100%;
+  min-height: 300px;
+  margin: 25px 0;
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+  overflow: hidden;
+  transition: var(--transition-default);
+}
+
+.qr-reader-area:empty::before {
+  content: 'Camera sẽ hiển thị tại đây';
+  color: #64748b;
+  font-style: italic;
+}
+
+.qr-reader-area video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qr-reader-area.active {
+  border-color: var(--primary-color);
+  animation: pulse 2s infinite;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #fee2e2;
+  color: var(--danger-color);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+  border-left: 4px solid var(--danger-color);
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.scan-btn {
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition-default);
+  border: none;
+  background-color: var(--primary-color);
+  color: white;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.scan-btn:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.scan-btn:active {
+  transform: translateY(0);
+}
+
+.scan-btn:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+/* Scan Result */
+.scan-result {
+  margin-top: 30px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.scan-result h3 {
+  color: var(--secondary-color);
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  position: relative;
+  display: inline-block;
+}
+
+.scan-result h3::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 2px;
+}
+
+.result-content {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.result-content pre {
+  margin: 0;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9rem;
+  color: #334155;
+  white-space: pre-wrap;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .qr-scanner-container {
+    padding: 20px 15px;
   }
   
-  .qr-scanner-container:hover {
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.15);
+  .scanner-wrapper {
+    padding: 25px;
   }
   
-  .qr-reader {
-    margin-bottom: 2.5rem; /* Tăng margin bottom */
-    border: 2px solid #e9ecef; /* Màu border nhạt hơn */
-    padding: 2rem; /* Tăng padding */
-    border-radius: 12px; /* Bo tròn góc nhiều hơn */
-    min-height: 300px; /* Tăng chiều cao tối thiểu */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffffff; /* Màu nền trắng */
+  .scanner-wrapper h2 {
+    font-size: 1.8rem;
   }
   
-  .scan-button {
-    background-color: #6366f1; /* Màu tím nhạt hơn */
-    color: #ffffff;
-    padding: 16px 28px; /* Tăng padding */
-    border-radius: 12px; /* Bo tròn góc nhiều hơn */
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem; /* Tăng kích thước font */
-    margin: 1.5rem auto; /* Tăng margin */
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    width: 100%;
-    max-width: 380px; /* Tăng kích thước nút */
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15); /* Tăng độ bóng */
+  .qr-reader-area {
+    min-height: 250px;
   }
   
-  .scan-button:hover {
-    background-color: #818cf8; /* Màu tím sáng hơn khi hover */
-    transform: translateY(-3px); /* Hiệu ứng nâng lên */
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  .scan-btn {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    min-width: 160px;
   }
   
-  .scan-button:active {
-    background-color: #4f46e5; /* Màu tím đậm hơn khi active */
-    transform: translateY(1px);
+  .scan-result h3 {
+    font-size: 1.2rem;
   }
   
-  .error-message {
-    color: #e53e3e; /* Màu đỏ đậm hơn */
-    margin-top: 2rem; /* Tăng margin top */
-    font-weight: 600; /* In đậm */
-    font-size: 1.1rem; /* Tăng kích thước font */
+  .result-content {
+    padding: 12px;
   }
   
-  .loading-indicator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2rem; /* Tăng margin top */
-    color: #6366f1;
-    font-weight: 600; /* In đậm */
+  .result-content pre {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .qr-scanner-container {
+    padding: 15px 10px;
   }
   
-  .loader {
-    border: 5px solid rgba(99, 102, 241, 0.2); /* Màu loader nhạt hơn */
-    border-radius: 50%;
-    border-top: 5px solid #6366f1; /* Màu loader đậm hơn */
-    width: 40px; /* Tăng kích thước loader */
-    height: 40px; /* Tăng kích thước loader */
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem; /* Tăng margin bottom */
+  .scanner-wrapper {
+    padding: 20px;
   }
   
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  .scanner-wrapper h2 {
+    font-size: 1.5rem;
   }
   
-  @media (max-width: 768px) {
-    .qr-scanner-container {
-      padding: 2rem;
-      max-width: 90%;
-    }
-  
-    .scan-button {
-      max-width: 100%;
-    }
+  .scanner-wrapper h2::after {
+    width: 60px;
+    height: 3px;
   }
+  
+  .qr-reader-area {
+    min-height: 200px;
+    margin: 15px 0;
+  }
+  
+  .scan-btn {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    min-width: 140px;
+  }
+  
+  .scan-result {
+    margin-top: 20px;
+  }
+  
+  .scan-result h3 {
+    font-size: 1.1rem;
+  }
+  
+  .result-content {
+    padding: 10px;
+    max-height: 150px;
+  }
+  
+  .result-content pre {
+    font-size: 0.8rem;
+  }
+}
