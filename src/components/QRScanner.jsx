@@ -24,8 +24,7 @@ const QRScanner = ({ onScan }) => {
 
       // Kiểm tra phản hồi từ server
       if (response.data.status === "success") {
-        // Nếu thành công, chuyển hướng client sang trang .test
-        window.location.href = "/test";
+        window.location.href = "/exam";
       } else {
         // Nếu thất bại, thông báo lỗi
         alert("Thông tin không hợp lệ hoặc không tìm thấy người dùng!");
