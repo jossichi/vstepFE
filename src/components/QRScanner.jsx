@@ -11,22 +11,32 @@ const QRScanner = ({ onScan }) => {
 
   const handleScan = async (decodedData) => {
     try {
-      const { card_id, user_id, signature } = decodedData; // Đảm bảo QR code chứa đúng dữ liệu
+      console.log("Dữ liệu quét được:", decodedData);
 
+      // Kiểm tra dữ liệu quét có đủ trường cần thiết không
+      const { card_id, user_id, signature } = decodedData;
+      console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
+
+      if (!card_id || !user_id || !signature) {
+        throw new Error(
+          "QR code thiếu thông tin cần thiết: card_id, user_id, signature"
+        );
+      }
+
+      // Gửi dữ liệu đến server với các trường đầy đủ
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/login`, // Dùng biến môi trường
+        `${process.env.REACT_APP_API_URL}/api/login`,
         {
           card_id,
           user_id,
-          signature,
+          signature, // Đảm bảo gửi signature
         }
       );
+      console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
 
-      // Kiểm tra phản hồi từ server
       if (response.data.status === "success") {
-        window.location.href = "/exam";
+        window.location.href = "/exam"; // Chuyển hướng khi thành công
       } else {
-        // Nếu thất bại, thông báo lỗi
         alert("Thông tin không hợp lệ hoặc không tìm thấy người dùng!");
       }
     } catch (error) {

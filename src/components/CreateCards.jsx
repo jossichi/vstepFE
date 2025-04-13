@@ -1,30 +1,40 @@
 import React, { useState } from "react";
-import { createCard } from "../utils/cardUtils";
+import { createCard } from "../utils/cardUtils"; // ⚠️ Ensure this hits correct server route
 import { v4 as uuidv4 } from "uuid";
+import "./CreateCards.css"; // Assuming you will add styles in a separate CSS file
 
 const CreateCards = () => {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [cardData, setCardData] = useState(null);
+  const [qrCode, setQrCode] = useState("");
 
   const handleCreateCard = async () => {
     setLoading(true);
-    setMessage("");
     setError("");
-    setCardData(null);
+    setQrCode("");
 
-    // 🆕 Tạo user_id và card_id
     const user_id = uuidv4();
-    const card_id = uuidv4();
+    const studentID = prompt("Nhập studentID (chỉ dùng 1 lần để mã hóa):");
+
+    if (!studentID) {
+      setLoading(false);
+      return setError("Bạn cần nhập studentID để tạo thẻ.");
+    }
 
     try {
-      // 📌 Gửi request với cả user_id & card_id
-      const data = await createCard(user_id, card_id);
-      setMessage("Thẻ được tạo thành công!");
-      setCardData(data);
+      const response = await createCard(user_id, studentID);
+      const qr = response.card.qr_code;
+      setQrCode(qr);
+
+      // ✅ Tự động tải ảnh QR Code
+      const a = document.createElement("a");
+      a.href = qr;
+      a.download = `qr_card_${user_id}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (err) {
-      setError(err.error || "Có lỗi xảy ra, vui lòng thử lại.");
+      setError(err?.error || "Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -32,26 +42,20 @@ const CreateCards = () => {
 
   return (
     <div className="create-card-container">
-      <h2>Tạo thẻ vật lý</h2>
-      <button onClick={handleCreateCard} disabled={loading}>
+      <h2 className="title">Tạo thẻ vật lý</h2>
+      <button
+        onClick={handleCreateCard}
+        disabled={loading}
+        className="create-button">
         {loading ? "Đang tạo..." : "Tạo thẻ"}
       </button>
 
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
-      {cardData && (
-        <div className="card-info">
-          <p>
-            <strong>Card ID:</strong> {cardData.card.card_id}
-          </p>
-          <p>
-            <strong>Public Key:</strong> {cardData.card.public_key}
-          </p>
-          <p>
-            <strong>Token:</strong> {cardData.token}
-          </p>{" "}
-          <img src={cardData.card.qr_code} alt="QR Code" />
+      {qrCode && (
+        <div className="qr-preview">
+          <img src={qrCode} alt="QR Code" className="qr-image" />
+          <p className="qr-description">Mã QR đã được tải xuống tự động.</p>
         </div>
       )}
     </div>

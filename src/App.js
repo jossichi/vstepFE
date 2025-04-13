@@ -26,7 +26,7 @@ const App = () => {
                 </>
               ) : (
                 // Nếu chưa đăng nhập, điều hướng về login
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<CreateCards />} />
               )}{" "}
               <Route path="/create-card" element={<CreateCards />} />
               <Route path="/login" element={<Login />} />
