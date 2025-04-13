@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { startQRScanner } from "../utils/qrUtils.js";
 import "../assets/QRScanner.css";
+import axios from "axios";
 
 const QRScanner = ({ onScan }) => {
   const [error, setError] = useState(null);
@@ -8,12 +9,31 @@ const QRScanner = ({ onScan }) => {
   const [scanResult, setScanResult] = useState(null);
   const [isActive, setIsActive] = useState(false);
 
-  const handleScan = (data) => {
-    console.log("QR scan result:", data);
-    setScanResult(data);
-    onScan(data);
-    setLoading(false);
-    setIsActive(false);
+  const handleScan = async (decodedData) => {
+    try {
+      const { card_id, user_id, signature } = decodedData; // Đảm bảo QR code chứa đúng dữ liệu
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/login`, // Dùng biến môi trường
+        {
+          card_id,
+          user_id,
+          signature,
+        }
+      );
+
+      // Kiểm tra phản hồi từ server
+      if (response.data.status === "success") {
+        // Nếu thành công, chuyển hướng client sang trang .test
+        window.location.href = "/test";
+      } else {
+        // Nếu thất bại, thông báo lỗi
+        alert("Thông tin không hợp lệ hoặc không tìm thấy người dùng!");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Đã có lỗi xảy ra trong quá trình xác thực.");
+    }
   };
 
   const handleStartScanner = () => {
@@ -21,7 +41,7 @@ const QRScanner = ({ onScan }) => {
     setError(null);
     setScanResult(null);
     setIsActive(true);
-    
+
     try {
       startQRScanner(handleScan);
     } catch (err) {
@@ -35,17 +55,18 @@ const QRScanner = ({ onScan }) => {
     <div className="qr-scanner-container">
       <div className="scanner-wrapper">
         <h2>QR Scanner</h2>
-        
-        <div id="qr-reader" className={`qr-reader-area ${isActive ? 'active' : ''}`}></div>
-        
+
+        <div
+          id="qr-reader"
+          className={`qr-reader-area ${isActive ? "active" : ""}`}></div>
+
         {error && <div className="error-message">{error}</div>}
-        
+
         <div className="button-group">
-          <button 
+          <button
             onClick={handleStartScanner}
             disabled={loading}
-            className="scan-btn"
-          >
+            className="scan-btn">
             {loading ? (
               <>
                 <span className="loading-spinner"></span>
@@ -56,7 +77,7 @@ const QRScanner = ({ onScan }) => {
             )}
           </button>
         </div>
-        
+
         {scanResult && (
           <div className="scan-result">
             <h3>Kết quả quét QR:</h3>
