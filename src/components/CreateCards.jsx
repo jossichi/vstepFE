@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { createCard } from "../utils/cardUtils"; // ⚠️ Ensure this hits correct server route
 import { v4 as uuidv4 } from "uuid";
 import "./CreateCards.css"; // Assuming you will add styles in a separate CSS file
+import { useNavigate } from "react-router-dom";
 
 const CreateCards = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [qrCode, setQrCode] = useState("");
-
+  const navigate = useNavigate();
   const handleCreateCard = async () => {
     setLoading(true);
     setError("");
@@ -33,6 +34,9 @@ const CreateCards = () => {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (err) {
       setError(err?.error || "Có lỗi xảy ra, vui lòng thử lại.");
     } finally {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../assets/ExamPage.css";
+import "../assets/styles/ExamPage.css";
 // Import dữ liệu mẫu
 import mockQuizData from "../utils/mockQuizData"; // Điều chỉnh đường dẫn nếu cần
 

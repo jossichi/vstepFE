@@ -1,4 +1,4 @@
-import "../assets/TestTable.scss";
+import "../assets/styles/TestTable.scss";
 
 const TestTable = ({ tests, onDelete, onEdit }) => {
   return (
@@ -18,21 +18,21 @@ const TestTable = ({ tests, onDelete, onEdit }) => {
               <td>{test.test_id}</td>
               <td>{test.test_type}</td>
               <td>
-                <span className={`level-badge level-${test.level.toLowerCase()}`}>
+                <span
+                  className={`level-badge level-${test.level.toLowerCase()}`}>
                   {test.level}
                 </span>
               </td>
               <td className="actionColumn">
-                <button 
-                  className="editButton" 
+                <button
+                  className="editButton"
                   onClick={() => onEdit(test)} // Thay đổi từ navigate sang onEdit
                 >
                   <i className="fas fa-edit"></i> Edit
                 </button>
-                <button 
-                  className="deleteButton" 
-                  onClick={() => onDelete(test.test_id)}
-                >
+                <button
+                  className="deleteButton"
+                  onClick={() => onDelete(test.test_id)}>
                   <i className="fas fa-trash-alt"></i> Delete
                 </button>
               </td>

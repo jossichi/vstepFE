@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { startQRScanner } from "../utils/qrUtils.js";
-import "../assets/QRScanner.css";
+import "../assets/styles/QRScanner.css";
 import axios from "axios";
 
 const QRScanner = ({ onScan }) => {

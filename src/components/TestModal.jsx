@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../assets/TestModal.scss";
+import "../assets/styles/TestModal.scss";
 const TestModal = ({ isOpen, onClose, onSave, initialData }) => {
   const [test, setTest] = useState({
     test_id: "",

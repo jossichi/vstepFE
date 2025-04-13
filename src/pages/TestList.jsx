@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { testService } from "../services/testService";
 import TestTable from "../components/TestTable";
 import { useNavigate } from "react-router-dom";
-import "../assets/TestList.scss";
+import "../assets/styles/TestList.scss";
 
 const TestList = () => {
   const [tests, setTests] = useState([]);

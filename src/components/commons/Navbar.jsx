@@ -7,7 +7,7 @@ import {
   FaCreditCard,
   FaTrophy,
 } from "react-icons/fa";
-import "../../assets/Navbar.css";
+import "../../assets/styles/Navbar.css";
 
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

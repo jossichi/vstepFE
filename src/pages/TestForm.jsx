@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { testService } from "../services/testService";
 import { useNavigate, useParams } from "react-router-dom";
-import "../assets/TestForm.scss";
+import "../assets/styles/TestForm.scss";
 
 const TestForm = () => {
   const [test, setTest] = useState({ test_id: "", test_type: "", level: "" });
