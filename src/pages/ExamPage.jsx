@@ -11,6 +11,9 @@ const ExamPage = () => {
     reading: {},
   });
 
+  // Lấy userID từ localStorage
+  const userID = localStorage.getItem("user_id"); // Giả sử userID đã được lưu vào localStorage khi đăng nhập
+
   useEffect(() => {
     // Giả lập việc tải dữ liệu để kiểm tra loading state
     const loadMockData = () => {
@@ -21,27 +24,6 @@ const ExamPage = () => {
     };
 
     loadMockData();
-
-    // Bỏ comment đoạn code dưới đây nếu muốn quay lại gọi API thực tế
-    /*
-    const fetchQuizData = async () => {
-      try {
-        const response = await fetch(
-          "https://fs505p2m-3000.asse.devtunnels.ms/api/quizzes/VSTEP_2025_01"
-        );
-        if (!response.ok) throw new Error("Lỗi khi tải dữ liệu");
-
-        const data = await response.json();
-        setQuizData(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQuizData();
-    */
   }, []);
 
   const getSectionTitle = (key) => {
@@ -152,6 +134,15 @@ const ExamPage = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
+      {/* Header Chào Mừng User */}
+      {userID && (
+        <header className="welcome-header text-center mb-8">
+          <h2>
+            Chào mừng bạn, <span className="user-id">{userID}</span>!
+          </h2>
+          <p>Hãy bắt đầu bài test nhanh VSTEP!</p>
+        </header>
+      )}
       <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">
         {quizData?.title}
       </h1>
@@ -179,8 +170,7 @@ const ExamPage = () => {
                 </p>
                 {renderReadingSection(quizData.sections.reading)}
               </div>
-            )}
-
+            )}{" "}
             {/* Submit Button */}
             <button onClick={submitAnswers} className="submit-button">
               Nộp bài
