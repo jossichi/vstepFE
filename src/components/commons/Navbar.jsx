@@ -51,6 +51,9 @@ const NavBar = () => {
           <Link className="nav-link" to="/exam">
             ExamPage
           </Link>
+          <Link className="nav-link" to="/create-card">
+            Create QR code
+          </Link>
 
           <div className={`nav-item dropdown ${isDropdownOpen ? "open" : ""}`}>
             <div

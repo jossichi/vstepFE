@@ -8,6 +8,8 @@ import Header from "./components/Layouts/Header";
 import Footer from "./components/Layouts/Footer";
 import Logout from "./pages/logout";
 import CreateCards from "./components/CreateCards";
+import ProfilePage from "./pages/ProfilePage";
+
 const App = () => {
   const isLoggedIn = localStorage.getItem("token");
 
@@ -33,6 +35,7 @@ const App = () => {
               <Route path="/tests" element={<TestList />} />
               <Route path="/test-form" element={<TestForm />} />
               <Route path="/exam" element={<ExamPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </div>
           <Footer />

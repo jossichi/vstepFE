@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { startQRScanner } from "../utils/qrUtils.js";
 import "../assets/styles/QRScanner.css";
 import axios from "axios";
+import { saveUserId, saveUserToken } from "../store/localStore.js";
 
 const QRScanner = ({ onScan }) => {
   const [error, setError] = useState(null);
@@ -15,7 +16,7 @@ const QRScanner = ({ onScan }) => {
 
       // Kiểm tra dữ liệu quét có đủ trường cần thiết không
       const { card_id, user_id, signature } = decodedData;
-      console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
+      // console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
 
       if (!card_id || !user_id || !signature) {
         throw new Error(
@@ -32,9 +33,11 @@ const QRScanner = ({ onScan }) => {
           signature, // Đảm bảo gửi signature
         }
       );
-      console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
+      // console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
 
       if (response.data.status === "success") {
+        saveUserId(response.data.user_id);
+        saveUserToken(response.data.token); // Lưu token vào localStorage     
         window.location.href = "/exam"; // Chuyển hướng khi thành công
       } else {
         alert("Thông tin không hợp lệ hoặc không tìm thấy người dùng!");

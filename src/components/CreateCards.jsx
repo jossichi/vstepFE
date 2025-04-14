@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createCard } from "../utils/cardUtils"; // ⚠️ Ensure this hits correct server route
 import { v4 as uuidv4 } from "uuid";
-import "./CreateCards.css"; // Assuming you will add styles in a separate CSS file
+import "../assets/styles/CreateCards.css"; // Assuming you will add styles in a separate CSS file
 import { useNavigate } from "react-router-dom";
 
 const CreateCards = () => {
