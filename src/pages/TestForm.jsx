@@ -4,12 +4,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../assets/styles/TestForm.scss";
 
 const TestForm = () => {
-  const [test, setTest] = useState({ test_id: "", test_type: "", level: "" });
+  const [test, setTest] = useState({
+    test_id: "",
+    test_type: "",
+    level: "",
+    url_audio: null,
+    instructions: "",
+    questions: [],
+    passages: [],
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // Fetch test data if an ID is provided (Edit Mode)
   useEffect(() => {
     if (id) {
       const fetchTest = async () => {
@@ -29,16 +38,43 @@ const TestForm = () => {
     }
   }, [id]);
 
+  // Handle form submission (Create or Update test)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("test_id", test.test_id);
+    formData.append("test_type", test.test_type);
+    formData.append("level", test.level);
+
+    // Add audio for listening type tests
+    if (test.test_type === "listening" && test.url_audio) {
+      formData.append("url_audio", test.url_audio); // Ensure this is the correct file format
+    }
+
+    // Add questions and passages for reading type tests
+    if (test.test_type === "reading") {
+      formData.append("instructions", test.instructions);
+      test.passages.forEach((passage, idx) => {
+        formData.append(`passages[${idx}].text`, passage.text);
+        passage.questions.forEach((question, qIdx) => {
+          formData.append(
+            `passages[${idx}].questions[${qIdx}]`,
+            JSON.stringify(question)
+          );
+        });
+      });
+    }
+
     try {
       setLoading(true);
       setError("");
 
       if (id) {
-        await testService.updateTest(id, test);
+        // Update test
+        await testService.updateTest(id, formData);
       } else {
-        await testService.createTest(test);
+        // Create new test
+        await testService.createTest(formData);
       }
 
       navigate("/tests");
@@ -52,6 +88,34 @@ const TestForm = () => {
 
   const handleCancel = () => {
     navigate("/tests");
+  };
+
+  const handleFileChange = (e) => {
+    setTest({ ...test, url_audio: e.target.files[0] }); // Handle file selection
+  };
+
+  const handleQuestionChange = (passageIndex, index, field, value) => {
+    const updatedPassages = [...test.passages];
+    updatedPassages[passageIndex].questions[index][field] = value;
+    setTest({ ...test, passages: updatedPassages });
+  };
+
+  const handleAddQuestion = (passageIndex) => {
+    const newQuestion = {
+      question_text: "",
+      question_type: "multiple_choice",
+      options: ["", "", "", ""], // Ensure 4 options are available
+      correct_answer: "",
+    };
+    const updatedPassages = [...test.passages];
+    updatedPassages[passageIndex].questions.push(newQuestion);
+    setTest({ ...test, passages: updatedPassages });
+  };
+
+  const handlePassageChange = (index, field, value) => {
+    const updatedPassages = [...test.passages];
+    updatedPassages[index][field] = value;
+    setTest({ ...test, passages: updatedPassages });
   };
 
   return (
@@ -86,27 +150,106 @@ const TestForm = () => {
               <option value="">Select Test Type</option>
               <option value="listening">Listening</option>
               <option value="reading">Reading</option>
-              <option value="speaking">Speaking</option>
-              <option value="writing">Writing</option>
             </select>
           </div>
 
-          <div className="input-group">
-            <label htmlFor="level">Level</label>
-            <select
-              id="level"
-              value={test.level}
-              onChange={(e) => setTest({ ...test, level: e.target.value })}
-              required>
-              <option value="">Select Level</option>
-              <option value="A1">A1 (Beginner)</option>
-              <option value="A2">A2 (Elementary)</option>
-              <option value="B1">B1 (Intermediate)</option>
-              <option value="B2">B2 (Upper Intermediate)</option>
-              <option value="C1">C1 (Advanced)</option>
-              <option value="C2">C2 (Proficiency)</option>
-            </select>
-          </div>
+          {test.test_type === "listening" && (
+            <div className="input-group">
+              <label htmlFor="url_audio">Audio File</label>
+              <input
+                id="url_audio"
+                type="file"
+                accept="audio/*"
+                onChange={handleFileChange}
+                required
+              />
+            </div>
+          )}
+
+          {test.test_type === "reading" && (
+            <div className="input-group">
+              <label htmlFor="instructions">Instructions</label>
+              <textarea
+                id="instructions"
+                value={test.instructions}
+                onChange={(e) =>
+                  setTest({ ...test, instructions: e.target.value })
+                }
+                required
+              />
+            </div>
+          )}
+
+          {test.test_type === "reading" &&
+            test.passages.map((passage, passageIndex) => (
+              <div key={passageIndex} className="input-group">
+                <label>Passage {passageIndex + 1}</label>
+                <textarea
+                  value={passage.text}
+                  onChange={(e) =>
+                    handlePassageChange(passageIndex, "text", e.target.value)
+                  }
+                  placeholder="Enter passage text"
+                  required
+                />
+                {passage.questions.map((question, questionIndex) => (
+                  <div key={questionIndex} className="question">
+                    <label>Question {questionIndex + 1}</label>
+                    <textarea
+                      value={question.question_text}
+                      onChange={(e) =>
+                        handleQuestionChange(
+                          passageIndex,
+                          questionIndex,
+                          "question_text",
+                          e.target.value
+                        )
+                      }
+                      required
+                    />
+                    <div>
+                      <label>Options</label>
+                      {question.options.map((option, optionIndex) => (
+                        <input
+                          key={optionIndex}
+                          type="text"
+                          placeholder={`Option ${optionIndex + 1}`}
+                          value={option}
+                          onChange={(e) =>
+                            handleQuestionChange(
+                              passageIndex,
+                              questionIndex,
+                              "options",
+                              e.target.value,
+                              optionIndex
+                            )
+                          }
+                        />
+                      ))}
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Correct answer"
+                      value={question.correct_answer}
+                      onChange={(e) =>
+                        handleQuestionChange(
+                          passageIndex,
+                          questionIndex,
+                          "correct_answer",
+                          e.target.value
+                        )
+                      }
+                      required
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => handleAddQuestion(passageIndex)}>
+                  Add Question
+                </button>
+              </div>
+            ))}
 
           <div className="button-group">
             <button type="button" className="cancel-btn" onClick={handleCancel}>

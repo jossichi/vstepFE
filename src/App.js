@@ -9,7 +9,7 @@ import Footer from "./components/Layouts/Footer";
 import Logout from "./pages/logout";
 import CreateCards from "./components/CreateCards";
 import ProfilePage from "./pages/ProfilePage";
-
+import CreateTestForm from "./pages/CreateTestForm";
 const App = () => {
   const isLoggedIn = localStorage.getItem("token");
 
@@ -30,6 +30,7 @@ const App = () => {
                 // Nếu chưa đăng nhập, điều hướng về login
                 <Route path="/" element={<CreateCards />} />
               )}{" "}
+              <Route path="/create-test" element={<CreateTestForm />} />
               <Route path="/create-card" element={<CreateCards />} />
               <Route path="/login" element={<Login />} />
               <Route path="/tests" element={<TestList />} />

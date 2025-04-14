@@ -1,35 +1,46 @@
+// src/services/testService.js
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/test";
+const API_URL = `${process.env.REACT_APP_API_URL}/api`;
+console.log("API URL:", API_URL);
 
 export const testService = {
-  getAllTests: async () => {
-    const response = await axios.get(API_URL);
-    return response.data;
-  },
-
   getTestById: async (id) => {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await axios.get(`${API_URL}/tests/${id}`);
     return response.data;
   },
 
-  createTest: async (testData) => {
-    const response = await axios.post(API_URL, testData);
+  createTest: async (data, isFormData = false) => {
+    const headers = isFormData
+      ? { "Content-Type": "multipart/form-data" }
+      : { "Content-Type": "application/json" };
+
+    const payload = isFormData ? data : JSON.stringify(data);
+
+    const response = await axios.post(`${API_URL}/tests`, payload, { headers });
     return response.data;
   },
 
-  updateTest: async (id, testData) => {
-    const response = await axios.put(`${API_URL}/${id}`, testData);
+  updateTest: async (id, data, isFormData = false) => {
+    const headers = isFormData
+      ? { "Content-Type": "multipart/form-data" }
+      : { "Content-Type": "application/json" };
+
+    const payload = isFormData ? data : JSON.stringify(data);
+
+    const response = await axios.put(`${API_URL}/tests/${id}`, payload, {
+      headers,
+    });
     return response.data;
   },
 
   deleteTest: async (id) => {
-    await axios.delete(`${API_URL}/${id}`);
+    const response = await axios.delete(`${API_URL}/tests/${id}`);
+    return response.data;
   },
-  getUserTests: async () => {
-    const response = await fetch(`${API_URL}/user-tests`);
-    if (!response.ok) throw new Error("Failed to fetch user tests");
-    return response.json();
+
+  getAllTests: async () => {
+    const response = await axios.get(`${API_URL}/tests`);
+    return response.data;
   },
 };
-export default testService;
