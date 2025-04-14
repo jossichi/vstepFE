@@ -39,9 +39,6 @@ const NavBar = () => {
         </div>
 
         <div className={`navbar-links ${isMobile ? "mobile" : ""}`}>
-          <Link className="nav-link" to="/tests">
-            Test List
-          </Link>
           <Link className="nav-link" to="/login">
             Login
           </Link>

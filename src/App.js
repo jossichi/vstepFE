@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login";
-import TestList from "./pages/TestList";
+
 import TestForm from "./pages/TestForm";
 import ExamPage from "./pages/ExamPage";
 import Header from "./components/Layouts/Header";
@@ -24,7 +24,6 @@ const App = () => {
               {isLoggedIn ? (
                 <>
                   <Route path="/logout" element={<Logout />} />
-                  <Route path="/" element={<TestList />} />
                 </>
               ) : (
                 // Nếu chưa đăng nhập, điều hướng về login
@@ -33,7 +32,6 @@ const App = () => {
               <Route path="/create-test" element={<CreateTestForm />} />
               <Route path="/create-card" element={<CreateCards />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/tests" element={<TestList />} />
               <Route path="/test-form" element={<TestForm />} />
               <Route path="/exam" element={<ExamPage />} />
               <Route path="/profile" element={<ProfilePage />} />
