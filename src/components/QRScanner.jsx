@@ -33,9 +33,9 @@ const QRScanner = ({ onScan }) => {
       if (response.data.status === "success") {
         // ✅ Lưu vào localStorage
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("userID", user_id);
+        localStorage.setItem("user_id", user_id);
 
-        console.log("userID lưu:", user_id); // Lưu userID vào localStorage
+        console.log("user_id lưu:", user_id); // Lưu userID vào localStorage
         console.log("Đăng nhập thành công:", response.data);
         console.log(
           "Dữ liệu người dùng đã lưu vào localStorage:",
