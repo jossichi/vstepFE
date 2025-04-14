@@ -20,20 +20,19 @@ export const createCard = async (user_id, studentID) => {
     return response.data;
   } catch (error) {
     // Xử lý lỗi nếu có từ server
-    // Kiểm tra error.response và trả về thông báo lỗi từ server nếu có
     if (error.response) {
       // Nếu có lỗi từ server, trả về message từ server
-      throw (
-        error.response?.data || { error: "Có lỗi xảy ra, vui lòng thử lại" }
-      );
+      const message =
+        error.response.data?.error || "Có lỗi xảy ra, vui lòng thử lại";
+      throw new Error(message);
     } else if (error.request) {
       // Nếu không có phản hồi từ server
-      throw {
-        error: "Không thể kết nối đến server, vui lòng kiểm tra lại kết nối",
-      };
+      throw new Error(
+        "Không thể kết nối đến server, vui lòng kiểm tra lại kết nối"
+      );
     } else {
       // Nếu có lỗi trong quá trình gửi request
-      throw { error: error.message || "Đã xảy ra lỗi, vui lòng thử lại" };
+      throw new Error(error.message || "Đã xảy ra lỗi, vui lòng thử lại");
     }
   }
 };

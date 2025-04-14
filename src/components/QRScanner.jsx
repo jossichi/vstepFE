@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { startQRScanner } from "../utils/qrUtils.js";
 import "../assets/styles/QRScanner.css";
 import axios from "axios";
-import { saveUserId, saveUserToken } from "../store/localStore.js";
 
 const QRScanner = ({ onScan }) => {
   const [error, setError] = useState(null);
@@ -14,9 +13,7 @@ const QRScanner = ({ onScan }) => {
     try {
       console.log("Dữ liệu quét được:", decodedData);
 
-      // Kiểm tra dữ liệu quét có đủ trường cần thiết không
       const { card_id, user_id, signature } = decodedData;
-      // console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
 
       if (!card_id || !user_id || !signature) {
         throw new Error(
@@ -24,21 +21,31 @@ const QRScanner = ({ onScan }) => {
         );
       }
 
-      // Gửi dữ liệu đến server với các trường đầy đủ
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/login`,
         {
           card_id,
           user_id,
-          signature, // Đảm bảo gửi signature
+          signature,
         }
       );
-      // console.log("Gửi dữ liệu đến server:", { card_id, user_id, signature });
 
       if (response.data.status === "success") {
-        saveUserId(response.data.user_id);
-        saveUserToken(response.data.token); // Lưu token vào localStorage     
-        window.location.href = "/exam"; // Chuyển hướng khi thành công
+        // ✅ Lưu vào localStorage
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        console.log("Đăng nhập thành công:", response.data);
+        console.log(
+          "Dữ liệu người dùng đã lưu vào localStorage:",
+          response.data.user
+        );
+
+        // Có thể gọi onScan nếu muốn thực hiện hành động khác
+        if (onScan) {
+          onScan(response.data);
+        }
+
+        // ✅ Điều hướng sang trang thi
+        window.location.href = "/exam";
       } else {
         alert("Thông tin không hợp lệ hoặc không tìm thấy người dùng!");
       }
