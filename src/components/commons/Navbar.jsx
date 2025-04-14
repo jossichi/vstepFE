@@ -42,9 +42,7 @@ const NavBar = () => {
           <Link className="nav-link" to="/login">
             Login
           </Link>
-          <Link className="nav-link" to="/test-form">
-            Test Form
-          </Link>
+
           <Link className="nav-link" to="/exam">
             ExamPage
           </Link>

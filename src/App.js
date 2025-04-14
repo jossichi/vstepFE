@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login";
 
-import TestForm from "./pages/TestForm";
 import ExamPage from "./pages/ExamPage";
 import Header from "./components/Layouts/Header";
 import Footer from "./components/Layouts/Footer";
@@ -32,7 +31,6 @@ const App = () => {
               <Route path="/create-test" element={<CreateTestForm />} />
               <Route path="/create-card" element={<CreateCards />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/test-form" element={<TestForm />} />
               <Route path="/exam" element={<ExamPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Routes>
