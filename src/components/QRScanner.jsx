@@ -33,6 +33,9 @@ const QRScanner = ({ onScan }) => {
       if (response.data.status === "success") {
         // ✅ Lưu vào localStorage
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("userID", user_id);
+
+        console.log("userID lưu:", user_id); // Lưu userID vào localStorage
         console.log("Đăng nhập thành công:", response.data);
         console.log(
           "Dữ liệu người dùng đã lưu vào localStorage:",
@@ -45,7 +48,9 @@ const QRScanner = ({ onScan }) => {
         }
 
         // ✅ Điều hướng sang trang thi
-        window.location.href = "/exam";
+        setTimeout(() => {
+          window.location.href = "/exam";
+        }, 300);
       } else {
         alert("Thông tin không hợp lệ hoặc không tìm thấy người dùng!");
       }
