@@ -11,8 +11,8 @@ export const getUserProfile = async () => {
       return null;
     }
 
-    console.log("🔐 Token đang gửi:", token);
-    console.log("👤 user_id:", user_id);
+    // console.log("🔐 Token đang gửi:", token);
+    // console.log("👤 user_id:", user_id);
 
     // Gửi yêu cầu GET đến API đúng endpoint
     const res = await axios.get(
