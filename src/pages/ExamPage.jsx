@@ -1,183 +1,89 @@
-import React, { useState, useEffect } from "react";
-import "../assets/styles/ExamPage.css";
-// Import dữ liệu mẫu
-import mockQuizData from "../utils/mockQuizData"; // Điều chỉnh đường dẫn nếu cần
+import React, { useEffect, useState } from "react";
+import { testService } from "../services/testService";
+import ReadingTest from "../components/loadingTest/ReadingExam";
+import ListeningTest from "../components/loadingTest/ListeningExam";
 
 const ExamPage = () => {
   const [loading, setLoading] = useState(true);
-  const [error] = useState(null);
-  const [quizData, setQuizData] = useState(null);
-  const [userAnswers, setUserAnswers] = useState({
-    reading: {},
-  });
-
-  // Lấy userID từ localStorage
-  const userID = localStorage.getItem("user_id"); // Giả sử userID đã được lưu vào localStorage khi đăng nhập
+  const [selectedTest, setSelectedTest] = useState(null);
+  const [userAnswers, setUserAnswers] = useState({});
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Giả lập việc tải dữ liệu để kiểm tra loading state
-    const loadMockData = () => {
-      setTimeout(() => {
-        setQuizData(mockQuizData);
+    const fetchAndSelectTest = async () => {
+      try {
+        const result = await testService.getAllTests();
+
+        const tests = result.tests || result; // fallback nếu response không có `tests` field
+
+        const validTests = tests.filter((test) => {
+          if (test.test_type === "reading") {
+            return (
+              test.passages &&
+              test.passages.reduce((sum, p) => sum + p.questions.length, 0) >=
+                10
+            );
+          } else if (test.test_type === "listening") {
+            return test.questions && test.questions.length >= 10;
+          }
+          return false;
+        });
+
+        if (validTests.length === 0) throw new Error("Không có đề phù hợp");
+
+        const randomTest =
+          validTests[Math.floor(Math.random() * validTests.length)];
+
+        setSelectedTest(randomTest);
+      } catch (err) {
+        console.error("Lỗi lấy test:", err);
+        setError(err.message || "Lỗi tải đề thi");
+      } finally {
         setLoading(false);
-      }, 1000); // Giả lập delay 1 giây
+      }
     };
 
-    loadMockData();
+    fetchAndSelectTest();
   }, []);
 
-  const getSectionTitle = (key) => {
-    return (
-      {
-        reading: "📖 Đọc",
-      }[key] || "Bài thi"
-    );
+  const handleSubmit = () => {
+    console.log("Đáp án:", userAnswers);
+    alert("Đã nộp bài!");
   };
 
-  // Handle answer selection
-  const handleAnswerChange = (section, questionId, value) => {
-    setUserAnswers((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [questionId]: value,
-      },
-    }));
-  };
-
-  // Submit answers
-  const submitAnswers = () => {
-    console.log("Đáp án người dùng:", userAnswers);
-    alert("Bài làm đã được nộp!");
-  };
-
-  // Render reading section
-  const renderReadingSection = (section) => {
-    return (
-      <div className="section-content">
-        {section.passages.map((passage, index) => (
-          <div key={passage.passage_id} className="mb-8">
-            {/* Passage Container */}
-            <div className="passage-container">
-              <h3 className="passage-number">Đoạn văn {index + 1}:</h3>
-              <div className="passage-text">{passage.text}</div>
-            </div>
-
-            {/* Questions Container */}
-            <div className="questions-wrapper">
-              {passage.questions.map((question, qIndex) => (
-                <div key={question.question_id} className="question-block">
-                  <p className="question-text">
-                    <span className="question-number">{qIndex + 1}.</span>
-                    {question.text}
-                  </p>
-
-                  {/* Multiple choice questions */}
-                  {question.question_type === "multiple_choice" && (
-                    <div className="options-grid">
-                      {question.options.map((option, oIndex) => (
-                        <label key={oIndex} className="option-label">
-                          <div className="option-container">
-                            <input
-                              type="radio"
-                              name={`reading-${question.question_id}`}
-                              value={option}
-                              checked={
-                                userAnswers.reading[question.question_id] ===
-                                option
-                              }
-                              onChange={() =>
-                                handleAnswerChange(
-                                  "reading",
-                                  question.question_id,
-                                  option
-                                )
-                              }
-                              className="option-input"
-                            />
-                            <span className="option-letter">
-                              {String.fromCharCode(65 + oIndex)}.
-                            </span>
-                            <span className="option-text">{option}</span>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Short answer questions */}
-                  {question.question_type === "short_answer" && (
-                    <div className="short-answer-container">
-                      <input
-                        type="text"
-                        value={userAnswers.reading[question.question_id] || ""}
-                        onChange={(e) =>
-                          handleAnswerChange(
-                            "reading",
-                            question.question_id,
-                            e.target.value
-                          )
-                        }
-                        className="short-answer-input"
-                        placeholder="Nhập câu trả lời của bạn..."
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  };
+  if (loading) return <p className="text-center">Đang tải đề...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (!selectedTest)
+    return <p className="text-center">Không có đề để hiển thị.</p>;
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      {/* Header Chào Mừng User */}
-      {userID && (
-        <header className="welcome-header text-center mb-8">
-          <h2>
-            Chào mừng bạn, <span className="user-id">{userID}</span>!
-          </h2>
-          <p>Hãy bắt đầu bài test nhanh VSTEP!</p>
-        </header>
-      )}
-      <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">
-        {quizData?.title}
-      </h1>
-      <p className="text-gray-500 text-center mb-8 text-xl">
-        Cấp độ: {quizData?.level}
-      </p>
-
-      {loading ? (
-        <div className="text-center text-lg font-semibold text-blue-600">
-          <div className="loader"></div>
-          Đang tải dữ liệu...
-        </div>
-      ) : error ? (
-        <div className="text-center text-red-500 text-lg font-semibold">
-          Lỗi: {error}
-        </div>
+      <h1 className="text-2xl font-bold text-center mb-2">Đề Thi Ngẫu Nhiên</h1>
+      <h2 className="text-lg text-center text-gray-600 mb-6">
+        Đang thi phần:{" "}
+        <span className="font-semibold text-blue-600">
+          {selectedTest.test_type === "reading" ? "Bài Đọc" : "Bài Nghe"}
+        </span>
+      </h2>
+      {selectedTest.test_type === "reading" ? (
+        <ReadingTest
+          data={selectedTest}
+          userAnswers={userAnswers}
+          setUserAnswers={setUserAnswers}
+        />
       ) : (
-        quizData && (
-          <>
-            {quizData.sections.reading && (
-              <div key="reading" className="section-container">
-                <h2 className="section-title">{getSectionTitle("reading")}</h2>
-                <p className="section-instructions">
-                  {quizData.sections.reading.instructions}
-                </p>
-                {renderReadingSection(quizData.sections.reading)}
-              </div>
-            )}{" "}
-            {/* Submit Button */}
-            <button onClick={submitAnswers} className="submit-button">
-              Nộp bài
-            </button>
-          </>
-        )
+        <ListeningTest
+          data={selectedTest}
+          userAnswers={userAnswers}
+          setUserAnswers={setUserAnswers}
+        />
       )}
+
+      <div className="text-center mt-8">
+        <button onClick={handleSubmit} className="submit-button">
+          Nộp bài
+        </button>
+      </div>
     </div>
   );
 };
