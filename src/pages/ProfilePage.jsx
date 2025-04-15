@@ -3,7 +3,7 @@ import ProfileHeader from "../components/profileComponents/ProfileHeader.jsx";
 import ProfileStats from "../components/profileComponents/ProfileStats.jsx";
 import ProfileCardInfo from "../components/profileComponents/ProfileCardInfo.jsx";
 import { getUserProfile } from "../services/userService";
-
+import { Link } from "react-router-dom";
 const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
 
@@ -34,6 +34,13 @@ const ProfilePage = () => {
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       <ProfileHeader user={userData.user} />
       <ProfileStats stats={userData.stats} />{" "}
+      <div className="flex justify-center">
+        <Link
+          to="/upload-test"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition duration-300">
+          Tạo bài ôn thi VSTEP
+        </Link>
+      </div>
       {/* ✅ Gọi component đã có biểu đồ */}
       <ProfileCardInfo card={userData.card} />
     </div>

@@ -2,7 +2,7 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
 import ExamPage from "../pages/ExamPage";
-
+import UoploadTest from "../pages/UploadTest.jsx";
 import CreateCards from "../components/CreateCards";
 import ProfilePage from "../pages/ProfilePage";
 import CreateTestForm from "../pages/CreateTestForm";
@@ -17,6 +17,7 @@ const RouterComponent = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/exam" element={<ExamPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/upload-test" element={<UoploadTest />} />
     </Routes>
   );
 };
