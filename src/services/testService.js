@@ -1,8 +1,7 @@
 // src/services/testService.js
 import axios from "axios";
-
+import { getUserToken, getUserId } from "../store/localStore";
 const API_URL = `${process.env.REACT_APP_API_URL}/api`;
-console.log("API URL:", API_URL);
 
 export const testService = {
   getTestById: async (id) => {
@@ -42,5 +41,32 @@ export const testService = {
   getAllTests: async () => {
     const response = await axios.get(`${API_URL}/tests`);
     return response.data;
+  },
+};
+export const userTestService = {
+  evaluateTest: async (answersPayload) => {
+    const token = getUserToken();
+    const user_id = getUserId();
+
+    if (!user_id || !token) {
+      throw new Error("Không tìm thấy thông tin đăng nhập người dùng.");
+    }
+
+    const data = {
+      user_id,
+      ...answersPayload, // gồm test_id và answers
+    };
+
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/evaluateTest`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return res.data;
   },
 };

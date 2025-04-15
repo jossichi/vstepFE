@@ -39,23 +39,12 @@ const NavBar = () => {
         </div>
 
         <div className={`navbar-links ${isMobile ? "mobile" : ""}`}>
-          <Link className="nav-link" to="/tests">
-            Test List
-          </Link>
           <Link className="nav-link" to="/login">
             Login
           </Link>
-          <Link className="nav-link" to="/test-form">
-            Test Form
-          </Link>
-          <Link className="nav-link" to="/exam">
-            ExamPage
-          </Link>
+
           <Link className="nav-link" to="/create-card">
             Create QR code
-          </Link>
-          <Link className="nav-link" to="/create-test">
-            CREATE TEST
           </Link>
 
           <div className={`nav-item dropdown ${isDropdownOpen ? "open" : ""}`}>

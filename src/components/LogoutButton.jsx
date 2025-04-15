@@ -1,43 +1,18 @@
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import authService from "../services/authService"; // Dịch vụ logout
-import { AuthContext } from "../context/AuthContext"; // Context người dùng
-
+import "../assets/styles/logoutBtn.css";
 const LogoutButton = () => {
-  const { logout } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
     try {
-      // Kiểm tra token trước khi logout
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No token found. Please login first.");
-      }
-      console.log("Token found:", token);
-
-      // Gọi service logout
-      const response = await authService.logout(); // Gọi API logout
-
-      // Xóa dữ liệu người dùng khỏi localStorage
-      localStorage.clear();
-
-      // Cập nhật context với trạng thái logout
-      logout();
-
-      // Điều hướng người dùng đến trang đăng nhập sau khi logout
-      navigate("/login");
-
-      alert(response.message); // Thông báo thành công
-    } catch (error) {
-      console.error("Error during logout:", error);
-      alert("Logout failed. Please try again.");
+      await authService.logout(); // Gọi logout từ authService
+      window.location.href = "/"; // Điều hướng về trang chủ
+    } catch (err) {
+      console.error("Logout error:", err); // In lỗi nếu logout thất bại
     }
   };
 
   return (
-    <button className="nav-link" onClick={handleLogout}>
-      Logout
+    <button onClick={handleLogout} className="btn btn-logout">
+      <span className="logout-title"> LOG OUT</span>
     </button>
   );
 };

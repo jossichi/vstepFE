@@ -1,78 +1,102 @@
-// Import statements should always come at the top
-// import { saveUserData } from "../utils/tokenUtils";
-const BASE_URL =
-  (process.env.REACT_APP_API_URL || "https://vstep-be.onrender.com") + "/api";
+const BASE_URL = process.env.REACT_APP_API_URL + "/api";
 
-const authService = {
-  loginWithQR: async (formData) => {
+// Helper: Lấy user từ localStorage
+const getUserFromStorage = () => {
+  try {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("user_id");
+
+    if (!token || !userId) {
+      console.error("Thiếu token hoặc user_id trong localStorage.");
+      return null;
+    }
+
+    // Kiểm tra dữ liệu người dùng
+    const userData = localStorage.getItem("user_data");
+    if (userData) {
+      return JSON.parse(userData);
+    } else {
+      console.error("Không tìm thấy dữ liệu người dùng trong localStorage.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu từ localStorage:", error);
+    return null;
+  }
+};
+
+// Helper: Lưu user data vào localStorage
+const saveUserDataToLocalStorage = (user, token) => {
+  if (!user || !token) {
+    console.warn("Invalid data. Không thể lưu dữ liệu vào localStorage.");
+    return;
+  }
+
+  try {
+    // Lưu thông tin người dùng và token vào localStorage
+    localStorage.setItem("token", token);
+    localStorage.setItem("user_id", user.user_id); // Lưu user_id
+
+    console.log("Dữ liệu người dùng đã được lưu vào localStorage.");
+  } catch (error) {
+    console.error("Lỗi khi lưu dữ liệu vào localStorage:", error);
+  }
+};
+
+// Hàm đăng nhập với QR code
+const loginWithQR = async (formData) => {
+  try {
+    // Gửi request đăng nhập đến server
     const response = await fetch(`${BASE_URL}/login`, {
       method: "POST",
-
       body: formData,
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.log("Error response:", errorData);
-      throw new Error("Invalid QR Code");
+      console.error("Error response:", errorData);
+      throw new Error(errorData.message || "Lỗi đăng nhập, vui lòng thử lại.");
     }
 
-    const data = await response.json(); // Sau khi đăng nhập thành công, token phải được lưu vào localStorage
+    // Lấy dữ liệu từ server
+    const data = await response.json();
 
-    // Trong mã đăng nhập
-    if (data.token) {
-      console.log("Token received:", data.token);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("card_id", data.user.card_id); // assuming `data.user.card_id` exists
+    console.log("Login response:", data);
+
+    // Kiểm tra nếu dữ liệu trả về thiếu token hoặc user_id
+    if (!data.token || !data.user_id) {
+      console.error("Dữ liệu trả về thiếu token hoặc user_id.");
+      throw new Error("Dữ liệu trả về không hợp lệ. Vui lòng kiểm tra lại.");
     }
 
-    if (data.token && data.user) {
-      // Lưu token và dữ liệu người dùng vào localStorage
-      localStorage.setItem("token", data.token); // Lưu token vào localStorage
-      localStorage.setItem("card_id", data.user.card_id); // Lưu card_id vào localStorage
-      localStorage.setItem("user_data", JSON.stringify(data.user)); // Lưu user dữ liệu vào localStorage
-    } else {
-      console.log("No valid data in response:", data); // Kiểm tra nếu response không có token hoặc user
-    }
-    return data; // Return the data which includes the token
-  },
-  logout: async () => {
-    // Lấy token từ localStorage
-    const token = localStorage.getItem("token");
+    // Lưu thông tin người dùng và token vào localStorage
+    saveUserDataToLocalStorage({ user_id: data.user_id }, data.token);
 
-    // Kiểm tra nếu không có token
-    if (!token) {
-      throw new Error("No token found. Please login first.");
-    }
+    console.log("User logged in successfully.");
 
-    // Lấy card_id từ localStorage
-    const card_id = localStorage.getItem("card_id");
-
-    // Kiểm tra nếu không có card_id
-    if (!card_id) {
-      throw new Error("No card_id found. Please login first.");
-    }
-
-    // Gửi yêu cầu logout tới server
-    const response = await fetch(`${BASE_URL}/logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Gửi token trong header
-      },
-      body: JSON.stringify({ card_id }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error logging out");
-    }
-
-    // Sau khi logout thành công, xóa token khỏi localStorage
-    localStorage.clear();
-
-    return await response.json(); // Trả về thông điệp từ server
-  },
+    return data;
+  } catch (error) {
+    console.error("Login error:", error.message);
+    alert("Lỗi xác thực trong quá trình đăng nhập: " + error.message);
+    throw error; // Đảm bảo lỗi được ném ra để có thể xử lý ở nơi gọi
+  }
 };
 
+// Logout
+const logout = async () => {
+  // Clear all data from localStorage
+  localStorage.clear();
+  console.log("User logged out and localStorage cleared.");
+  return true;
+};
+
+// Assign the object to a variable
+const authService = {
+  loginWithQR,
+  saveUserDataToLocalStorage,
+  logout,
+  getUserFromStorage,
+};
+
+// Export the object
 export default authService;

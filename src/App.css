@@ -27,6 +27,12 @@
 .App-link {
   color: #61dafb;
 }
+/* Nếu không dùng Tailwind, bạn có thể thêm vào style.css */
+audio {
+  outline: none;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
 
 @keyframes App-logo-spin {
   from {
