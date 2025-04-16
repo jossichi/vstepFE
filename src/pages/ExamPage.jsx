@@ -3,6 +3,7 @@ import { testService, userTestService } from "../services/testService";
 import ReadingTest from "../components/loadingTest/ReadingExam";
 import ListeningTest from "../components/loadingTest/ListeningExam";
 import Swal from "sweetalert2";
+import "../assets/styles/ExamPage.css";
 const ExamPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTest, setSelectedTest] = useState(null);

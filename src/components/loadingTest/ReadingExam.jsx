@@ -1,5 +1,5 @@
 import React from "react";
-
+import "../../assets/styles/ReadingTest.css"; // Đảm bảo đường dẫn đúng
 const ReadingTest = ({ data, userAnswers, setUserAnswers }) => {
   const handleAnswerChange = (questionId, value) => {
     setUserAnswers((prev) => ({
