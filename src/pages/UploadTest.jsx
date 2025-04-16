@@ -3,6 +3,8 @@ import Form from "@rjsf/core";
 import Validator from "@rjsf/validator-ajv8";
 import ReactJson from "react-json-view";
 import uploadMaterial from "../services/uploadService";
+import { Tabs, Tab, Box } from "@mui/material";
+
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",
   title: "Tạo đề ôn VSTEP",
@@ -369,9 +371,11 @@ const initialUiSchema = {
 const UploadTest = () => {
   const [formData, setFormData] = useState({});
   const [uiSchema, setUiSchema] = useState(initialUiSchema);
+  const [tab, setTab] = useState(0); // tab index: 0 - Listening, 1 - Reading, etc.
+
   const handleSubmit = async ({ formData }) => {
     try {
-      const response = await uploadMaterial(formData); // Gọi service để upload
+      const response = await uploadMaterial(formData);
       alert(
         "Successfully uploaded material: " + JSON.stringify(response, null, 2)
       );
@@ -379,9 +383,55 @@ const UploadTest = () => {
       alert("Failed to upload material.");
     }
   };
+
+  const getSectionName = (tabIndex) => {
+    switch (tabIndex) {
+      case 0:
+        return "listening";
+      case 1:
+        return "reading";
+      case 2:
+        return "writing";
+      case 3:
+        return "speaking";
+      default:
+        return "listening";
+    }
+  };
+
+  const currentSection = getSectionName(tab);
+
+  // Chỉ render phần schema/uiSchema tương ứng với tab hiện tại
+  const filteredSchema = {
+    title: `Upload ${currentSection} section`,
+    type: "object",
+    properties: {
+      [currentSection]: schema.properties[currentSection],
+    },
+    required: schema.required.includes(currentSection) ? [currentSection] : [],
+  };
+
+  const filteredUiSchema = {
+    [currentSection]: uiSchema[currentSection],
+  };
+
   return (
     <div className="container mt-4">
       <h2>🎨 TẠO ĐỀ ÔN TẬP VSTEP</h2>
+
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+        <Tabs
+          value={tab}
+          onChange={(e, val) => setTab(val)}
+          textColor="primary"
+          indicatorColor="primary">
+          <Tab label="Listening" />
+          <Tab label="Reading" />
+          <Tab label="Writing" />
+          <Tab label="Speaking" />
+        </Tabs>
+      </Box>
+
       <ReactJson
         src={uiSchema}
         onEdit={(edit) => setUiSchema(edit.updated_src)}
@@ -390,14 +440,16 @@ const UploadTest = () => {
         name={false}
         collapsed={false}
       />
-      <Form
-        schema={schema}
-        uiSchema={uiSchema}
-        formData={formData}
-        onChange={({ formData }) => setFormData(formData)}
-        onSubmit={handleSubmit}
-        validator={Validator}
-      />
+      <div className="form-container">
+        <Form
+          schema={filteredSchema}
+          uiSchema={filteredUiSchema}
+          formData={formData}
+          onChange={({ formData }) => setFormData(formData)} // Cập nhật formData khi có thay đổi
+          onSubmit={handleSubmit}
+          validator={Validator}
+        />
+      </div>
     </div>
   );
 };
