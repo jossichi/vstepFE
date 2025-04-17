@@ -1,11 +1,11 @@
 {
   "files": {
     "main.css": "/vstepFE/static/css/main.962f08ff.css",
-    "main.js": "/vstepFE/static/js/main.9b3a3a77.js",
+    "main.js": "/vstepFE/static/js/main.9f31804f.js",
     "index.html": "/vstepFE/index.html"
   },
   "entrypoints": [
     "static/css/main.962f08ff.css",
-    "static/js/main.9b3a3a77.js"
+    "static/js/main.9f31804f.js"
   ]
 }
