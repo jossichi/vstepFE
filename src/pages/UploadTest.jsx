@@ -3,9 +3,10 @@ import Form from "@rjsf/core";
 import Validator from "@rjsf/validator-ajv8";
 import ReactJson from "react-json-view";
 import uploadMaterial from "../services/uploadService";
-import { Tabs, Tab, Box } from "@mui/material";
+import { Box, Tabs, Tab, Typography, Paper, Grid, Button } from "@mui/material";
 
-const schema = {
+import "../assets/styles/UploadTest.css";
+const initialSchema = {
   $schema: "http://json-schema.org/draft-07/schema#",
   title: "Tạo đề ôn VSTEP",
   type: "object",
@@ -371,7 +372,8 @@ const initialUiSchema = {
 const UploadTest = () => {
   const [formData, setFormData] = useState({});
   const [uiSchema, setUiSchema] = useState(initialUiSchema);
-  const [tab, setTab] = useState(0); // tab index: 0 - Listening, 1 - Reading, etc.
+  const [tab, setTab] = useState(0);
+  const [schema, setSchema] = useState(initialSchema); // Sử dụng initialSchema thay vì setSchema
 
   const handleSubmit = async ({ formData }) => {
     try {
@@ -401,55 +403,130 @@ const UploadTest = () => {
 
   const currentSection = getSectionName(tab);
 
-  // Chỉ render phần schema/uiSchema tương ứng với tab hiện tại
+  // Cập nhật filteredSchema khi schema thay đổi
   const filteredSchema = {
-    title: `Upload ${currentSection} section`,
-    type: "object",
+    ...schema,
     properties: {
       [currentSection]: schema.properties[currentSection],
     },
     required: schema.required.includes(currentSection) ? [currentSection] : [],
   };
 
+  const allSections = ["listening", "reading", "writing", "speaking"];
   const filteredUiSchema = {
-    [currentSection]: uiSchema[currentSection],
+    ...uiSchema,
+    ...Object.fromEntries(
+      allSections.map((section) => [
+        section,
+        section === currentSection
+          ? uiSchema[section]
+          : { "ui:widget": () => null },
+      ])
+    ),
   };
 
   return (
     <div className="container mt-4">
       <h2>🎨 TẠO ĐỀ ÔN TẬP VSTEP</h2>
 
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+      {/* Tabs */}
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={tab}
-          onChange={(e, val) => setTab(val)}
-          textColor="primary"
-          indicatorColor="primary">
-          <Tab label="Listening" />
-          <Tab label="Reading" />
-          <Tab label="Writing" />
-          <Tab label="Speaking" />
+          onChange={(e, newValue) => setTab(newValue)}
+          aria-label="Tabs">
+          <Tab label="🎧 Listening" />
+          <Tab label="📖 Reading" />
+          <Tab label="✍️ Writing" />
+          <Tab label="🗣️ Speaking" />
         </Tabs>
       </Box>
 
-      <ReactJson
-        src={uiSchema}
-        onEdit={(edit) => setUiSchema(edit.updated_src)}
-        onAdd={(add) => setUiSchema(add.updated_src)}
-        onDelete={(del) => setUiSchema(del.updated_src)}
-        name={false}
-        collapsed={false}
-      />
-      <div className="form-container">
+      {/* Schema View */}
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={12} md={6}>
+          <Paper elevation={3} sx={{ p: 2, borderRadius: "8px" }}>
+            <Typography variant="h6">Xem JSON Schema</Typography>
+            <ReactJson
+              src={filteredSchema}
+              name={false}
+              collapsed={false}
+              enableClipboard={true}
+              displayDataTypes={false}
+              theme="monokai"
+              onEdit={(edit) => setSchema(edit.updated_src)} // Cập nhật schema khi chỉnh sửa
+              onAdd={(add) => setSchema(add.updated_src)}
+              onDelete={(del) => setSchema(del.updated_src)}
+            />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper elevation={3} sx={{ p: 2, borderRadius: "8px" }}>
+            <Typography variant="h6">Xem UI Schema</Typography>
+            <ReactJson
+              src={uiSchema}
+              onEdit={(edit) => setUiSchema(edit.updated_src)} // Cập nhật uiSchema khi chỉnh sửa
+              onAdd={(add) => setUiSchema(add.updated_src)}
+              onDelete={(del) => setUiSchema(del.updated_src)}
+              name={false}
+              collapsed={false}
+              theme="monokai"
+            />
+          </Paper>
+        </Grid>
+      </Grid>
+
+      {/* Form */}
+      <div className="form-container" style={{ marginTop: "2rem" }}>
         <Form
           schema={filteredSchema}
           uiSchema={filteredUiSchema}
           formData={formData}
-          onChange={({ formData }) => setFormData(formData)} // Cập nhật formData khi có thay đổi
+          onChange={(e) => setFormData(e.formData)}
           onSubmit={handleSubmit}
           validator={Validator}
         />
       </div>
+
+      {/* Preview Data */}
+      <div style={{ marginTop: "2rem" }}>
+        <h4>🔍 Xem trước dữ liệu sẽ gửi:</h4>
+        <ReactJson
+          src={formData}
+          collapsed={2}
+          name={false}
+          enableClipboard={true}
+          displayDataTypes={false}
+        />
+      </div>
+
+      {/* Editing Sections */}
+      {tab === 4 && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6">Chỉnh sửa UI Schema</Typography>
+          <ReactJson
+            src={uiSchema}
+            onEdit={(edit) => setUiSchema(edit.updated_src)}
+            onAdd={(add) => setUiSchema(add.updated_src)}
+            onDelete={(del) => setUiSchema(del.updated_src)}
+            name={false}
+            collapsed={false}
+          />
+        </Box>
+      )}
+      {tab === 5 && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6">Chỉnh sửa JSON Schema</Typography>
+          <ReactJson
+            src={schema}
+            onEdit={(edit) => setSchema(edit.updated_src)} // Cập nhật schema khi chỉnh sửa
+            onAdd={(add) => setSchema(add.updated_src)}
+            onDelete={(del) => setSchema(del.updated_src)}
+            name={false}
+            collapsed={false}
+          />
+        </Box>
+      )}
     </div>
   );
 };
