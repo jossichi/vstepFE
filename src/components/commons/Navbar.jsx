@@ -98,7 +98,7 @@ const NavBar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/practice-material">
+                    <Link to="/checkbox-component">
                       <FaCreditCard /> Tài liệu học
                     </Link>
                   </li>

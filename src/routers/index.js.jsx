@@ -5,7 +5,7 @@ import UploadTest from "../pages/UploadTest.jsx";
 import CreateCards from "../components/CreateCards";
 import ProfilePage from "../pages/ProfilePage";
 import CreateTestForm from "../pages/CreateTestForm";
-import PracticeMaterial from "../components/material/PracticeMaterial";
+import CheckboxComponent from "../components/material/CheckboxComponent";
 
 const RouterComponent = () => {
   return (
@@ -17,7 +17,7 @@ const RouterComponent = () => {
       <Route path="/exam" element={<ExamPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/upload-test" element={<UploadTest />} />
-      <Route path="/practice-material" element={<PracticeMaterial />} />
+      <Route path="/checkbox-component" element={<CheckboxComponent />} />
     </Routes>
   );
 };

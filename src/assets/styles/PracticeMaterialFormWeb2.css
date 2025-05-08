@@ -1,0 +1,459 @@
+/* Modern Practice Material Form Styles */
+.practice-form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .practice-form-container .form-header {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+  
+  .practice-form-container .form-header h1 {
+    color: #2563eb;
+    font-size: 32px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .practice-form-container .form-header p {
+    color: #6b7280;
+    font-size: 16px;
+  }
+  
+  .practice-form-container .form-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin-bottom: 25px;
+    border: none;
+  }
+  
+  .practice-form-container .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  @media (max-width: 768px) {
+    .practice-form-container .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .practice-form-container .form-group {
+    margin-bottom: 24px;
+  }
+  
+  .practice-form-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4b5563;
+    font-size: 15px;
+  }
+  
+  .practice-form-container input,
+  .practice-form-container select,
+  .practice-form-container textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+    color: #1f2937;
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+  }
+  
+  .practice-form-container input:focus,
+  .practice-form-container select:focus,
+  .practice-form-container textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background-color: #fff;
+  }
+  
+  /* Tabs */
+  /* Tabs - Updated to be more evenly spaced */
+  .practice-form-container .tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 25px;
+    width: 100%;
+  }
+  
+  .practice-form-container .tabs button {
+    flex: 1;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: #6b7280;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    position: relative;
+    bottom: -2px;
+    text-align: center;
+  }
+  
+  .practice-form-container .tabs button:hover {
+    color: #3b82f6;
+  }
+  
+  .practice-form-container .tabs button.active {
+    color: #2563eb;
+    border-bottom: 3px solid #2563eb;
+  }
+  
+  .practice-form-container .tabs-container {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .practice-form-container .tab-content {
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .practice-form-container .tab-pane {
+    width: 100%;
+    display: none;
+  }
+  
+  .practice-form-container .tab-pane.active {
+    width: 100%;
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Section Headers */
+  .practice-form-container .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .practice-form-container .section-header h3,
+  .practice-form-container .section-header h4 {
+    color: #2563eb;
+    font-weight: 600;
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  /* Buttons */
+  .practice-form-container .btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .practice-form-container .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  
+  .practice-form-container .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  }
+  
+  .practice-form-container .btn-outline {
+    background: white;
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+  }
+  
+  .practice-form-container .btn-outline:hover {
+    background: #f0f7ff;
+    border-color: #2563eb;
+    color: #2563eb;
+  }
+  
+  .practice-form-container .btn-danger {
+    background: white;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+  }
+  
+  .practice-form-container .btn-danger:hover {
+    background: #fef2f2;
+    color: #dc2626;
+  }
+  
+  .practice-form-container .btn-sm {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+  
+  .practice-form-container .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+  
+  .practice-form-container .button-group {
+    display: flex;
+    gap: 12px;
+  }
+  
+  /* Accordion */
+  .practice-form-container .accordion {
+    margin-bottom: 25px;
+  }
+  
+  .practice-form-container .accordion-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+  }
+  
+  .practice-form-container .accordion-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .practice-form-container .accordion-header {
+    background-color: #f9fafb;
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    color: #4b5563;
+  }
+  
+  .practice-form-container .accordion-header:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .practice-form-container .accordion-content {
+    padding: 20px;
+    display: none;
+    border-top: 1px solid #f0f0f0;
+    background-color: #fff;
+  }
+  
+  .practice-form-container .accordion-content.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Question Cards */
+  .practice-form-container .question-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    background-color: #f9fafb;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .practice-form-container .question-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .practice-form-container .question-header {
+    padding: 14px 18px;
+    background-color: #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #4b5563;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .practice-form-container .question-content {
+    padding: 18px;
+  }
+  
+  .practice-form-container .option-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+  
+  .practice-form-container .option-label {
+    font-weight: 600;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e5e7eb;
+    border-radius: 50%;
+    color: #4b5563;
+    font-size: 14px;
+  }
+  
+  /* Empty States */
+  .practice-form-container .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    border: 2px dashed #e5e7eb;
+    border-radius: 10px;
+    color: #9ca3af;
+    background-color: #f9fafb;
+  }
+  
+  .practice-form-container .empty-state p {
+    margin: 0;
+    font-size: 15px;
+  }
+  
+  /* Success and Error Messages */
+  .practice-form-container .success-message,
+  .practice-form-container .error-message {
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .practice-form-container .success-message {
+    background-color: #ecfdf5;
+    border: 1px solid #d1fae5;
+    color: #065f46;
+  }
+  
+  .practice-form-container .success-message h3 {
+    color: #059669;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .practice-form-container .error-message {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #991b1b;
+  }
+  
+  .practice-form-container .error-message h3 {
+    color: #dc2626;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .practice-form-container .question-count {
+    font-size: 13px;
+    color: #6b7280;
+    background-color: #e5e7eb;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-left: 15px;
+  }
+  
+  /* Form Actions */
+  .practice-form-container .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+  }
+  
+  /* Make accordion content active by default */
+  .practice-form-container .accordion-content.active {
+    display: block;
+  }
+  
+  /* Add JavaScript to toggle accordion */
+  .practice-form-container .accordion-header {
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .practice-form-container .accordion-header::after {
+    content: "+";
+    position: absolute;
+    right: 20px;
+    font-size: 20px;
+    color: #9ca3af;
+    transition: transform 0.3s ease;
+  }
+  
+  .practice-form-container .accordion-item .accordion-content.active + .accordion-header::after {
+    transform: rotate(45deg);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .practice-form-container {
+      padding: 20px 15px;
+    }
+  
+    .practice-form-container .form-card {
+      padding: 20px;
+    }
+  
+    .practice-form-container .tabs {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 5px;
+    }
+  
+    .practice-form-container .tabs button {
+      padding: 10px 15px;
+    }
+  
+    .practice-form-container .button-group {
+      flex-wrap: wrap;
+    }
+  }

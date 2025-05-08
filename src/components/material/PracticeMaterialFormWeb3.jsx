@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ExtendedPracticeMaterialForm() {
+export default function PracticeMaterialFormWeb3() {
   const initialFormState = {
     user_id: '',
     materialData: {
@@ -274,7 +274,7 @@ export default function ExtendedPracticeMaterialForm() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Practice Material Submission</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Practice Material Form Web3</h1>
       
       {message && (
         <div className={`p-4 mb-4 rounded ${messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
