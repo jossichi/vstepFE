@@ -1,3 +1,5 @@
+import React from "react";
+
 function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
   const addListeningPart = () => {
     if (listeningParts.length < maxParts) {
@@ -5,26 +7,28 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
         ...listeningParts,
         {
           part: `L_PART${listeningParts.length + 1}`,
-          audio_file: "",
+          audio_url: "",
           questions: [],
         },
-      ])
+      ]);
     }
-  }
+  };
 
   const updateListeningPart = (index, field, value) => {
-    const updatedParts = [...listeningParts]
-    updatedParts[index] = { ...updatedParts[index], [field]: value }
-    setListeningParts(updatedParts)
-  }
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[index];
+    part[field] = value;
+    updatedParts[index] = part;
+    setListeningParts(updatedParts);
+  };
 
   const removeListeningPart = (index) => {
-    setListeningParts(listeningParts.filter((_, i) => i !== index))
-  }
+    setListeningParts(listeningParts.filter((_, i) => i !== index));
+  };
 
   const addListeningQuestion = (partIndex) => {
-    const updatedParts = [...listeningParts]
-    const part = updatedParts[partIndex]
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[partIndex];
 
     updatedParts[partIndex] = {
       ...part,
@@ -33,67 +37,158 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
         {
           question_id: `L${partIndex + 1}_Q${String(part.questions.length + 1).padStart(3, "0")}`,
           question_text: "",
-          options: ["", "", "", ""],
+          options: ["", "", ""], // Mặc định 3 lựa chọn
           correct_answer: "",
         },
       ],
-    }
+    };
 
-    setListeningParts(updatedParts)
-  }
+    setListeningParts(updatedParts);
+  };
 
   const updateListeningQuestion = (partIndex, questionIndex, field, value) => {
-    const updatedParts = [...listeningParts]
-    const part = updatedParts[partIndex]
-    const questions = [...part.questions]
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
 
-    questions[questionIndex] = { ...questions[questionIndex], [field]: value }
-    updatedParts[partIndex] = { ...part, questions }
+    questions[questionIndex] = { ...questions[questionIndex], [field]: value };
+    updatedParts[partIndex] = { ...part, questions };
 
-    setListeningParts(updatedParts)
-  }
+    setListeningParts(updatedParts);
+  };
+
+  const addListeningOption = (partIndex, questionIndex) => {
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
+    const question = questions[questionIndex];
+    const options = [...question.options];
+
+    if (options.length < 5) {
+      options.push("");
+      questions[questionIndex] = { ...question, options };
+      updatedParts[partIndex] = { ...part, questions };
+      setListeningParts(updatedParts);
+    }
+  };
+
+  const removeListeningOption = (partIndex, questionIndex, optionIndex) => {
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
+    const question = questions[questionIndex];
+    const options = [...question.options];
+
+    if (options.length > 3) {
+      options.splice(optionIndex, 1);
+      questions[questionIndex] = { ...question, options };
+      updatedParts[partIndex] = { ...part, questions };
+      setListeningParts(updatedParts);
+    }
+  };
 
   const updateListeningOption = (partIndex, questionIndex, optionIndex, value) => {
-    const updatedParts = [...listeningParts]
-    const part = updatedParts[partIndex]
-    const questions = [...part.questions]
-    const question = questions[questionIndex]
-    const options = [...question.options]
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
+    const question = questions[questionIndex];
+    const options = [...question.options];
 
-    options[optionIndex] = value
-    questions[questionIndex] = { ...question, options }
-    updatedParts[partIndex] = { ...part, questions }
+    options[optionIndex] = value;
+    questions[questionIndex] = { ...question, options };
+    updatedParts[partIndex] = { ...part, questions };
 
-    setListeningParts(updatedParts)
-  }
+    setListeningParts(updatedParts);
+  };
 
   const removeListeningQuestion = (partIndex, questionIndex) => {
-    const updatedParts = [...listeningParts]
-    const part = updatedParts[partIndex]
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[partIndex];
 
     updatedParts[partIndex] = {
       ...part,
       questions: part.questions.filter((_, i) => i !== questionIndex),
+    };
+
+    setListeningParts(updatedParts);
+  };
+
+  // Xử lý upload file âm thanh thành Base64
+  const handleAudioUpload = (partIndex, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const updatedParts = [...listeningParts];
+        const part = updatedParts[partIndex];
+        part.audio_url = reader.result; // Lưu Base64
+        updatedParts[partIndex] = part;
+        setListeningParts(updatedParts);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Xóa audio_url (URL hoặc Base64)
+  const clearAudio = (partIndex) => {
+    const updatedParts = [...listeningParts];
+    updatedParts[partIndex].audio_url = "";
+    setListeningParts(updatedParts);
+  };
+
+  // Kiểm tra định dạng URL
+  const isValidUrl = (url) => {
+    const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
+    return urlPattern.test(url);
+  };
+
+  // Xử lý khi người dùng nhập Audio URL
+  const handleAudioUrlChange = (partIndex, value) => {
+    const updatedParts = [...listeningParts];
+    const part = updatedParts[partIndex];
+
+    // Nếu giá trị rỗng, cho phép cập nhật
+    if (!value) {
+      part.audio_url = value;
+      updatedParts[partIndex] = part;
+      setListeningParts(updatedParts);
+      return;
     }
 
-    setListeningParts(updatedParts)
-  }
+    // Kiểm tra định dạng: Base64 hoặc URL hợp lệ
+    const isBase64 = value.startsWith("data:audio");
+    const isUrl = isValidUrl(value);
+
+    if (isBase64 || isUrl) {
+      part.audio_url = value;
+    } else {
+      part.audio_url = value; // Vẫn lưu giá trị nhưng sẽ hiển thị lỗi
+      part.error = "Audio URL must be a valid URL (starting with http:// or https://) or a Base64 string.";
+    }
+
+    if (part.error && (isBase64 || isUrl)) {
+      delete part.error; // Xóa lỗi nếu giá trị hợp lệ
+    }
+
+    updatedParts[partIndex] = part;
+    setListeningParts(updatedParts);
+  };
 
   // Toggle accordion
   const toggleAccordion = (id) => {
-    const element = document.getElementById(id)
+    const element = document.getElementById(id);
     if (element) {
-      element.classList.toggle("active")
+      element.classList.toggle("active");
     }
-  }
+  };
 
   return (
     <div>
       <div className="section-header">
         <h3>Listening Sections</h3>
-        <button 
-          type="button" 
-          className="btn btn-outline" 
+        <button
+          type="button"
+          className="btn btn-outline"
           onClick={addListeningPart}
           disabled={listeningParts.length >= maxParts}
         >
@@ -109,7 +204,10 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
         <div className="accordion">
           {listeningParts.map((part, partIndex) => (
             <div key={partIndex} className="accordion-item">
-              <div className="accordion-header" onClick={() => toggleAccordion(`listening-part-${partIndex}`)}>
+              <div
+                className="accordion-header"
+                onClick={() => toggleAccordion(`listening-part-${partIndex}`)}
+              >
                 <span>
                   Part {partIndex + 1}: {part.part}
                 </span>
@@ -118,22 +216,75 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
               <div id={`listening-part-${partIndex}`} className="accordion-content">
                 <div className="form-group">
                   <label>Part ID</label>
-                  <input
-                    type="text"
-                    value={part.part}
-                    onChange={(e) => updateListeningPart(partIndex, "part", e.target.value)}
-                    style={{ marginBottom: '15px' }}
-                  />
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "15px" }}>
+                    <input
+                      type="text"
+                      value={part.part}
+                      onChange={(e) => updateListeningPart(partIndex, "part", e.target.value)}
+                      style={{ flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-danger"
+                      onClick={() => updateListeningPart(partIndex, "part", "")}
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
                 <div className="form-group">
-                  <label>Audio File URL</label>
-                  <input
-                    type="text"
-                    value={part.audio_file}
-                    onChange={(e) => updateListeningPart(partIndex, "audio_file", e.target.value)}
-                    placeholder="https://drive.google.com/file/..."
-                    style={{ marginBottom: '15px' }}
-                  />
+                  {/* Audio URL */}
+                  {(!part.audio_url || !part.audio_url.startsWith("data:")) && (
+                    <>
+                      <label>Audio URL</label>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "15px" }}>
+                        <input
+                          type="text"
+                          value={part.audio_url || ""}
+                          onChange={(e) => handleAudioUrlChange(partIndex, e.target.value)}
+                          placeholder="https://drive.google.com/file/..."
+                          style={{ flex: 1 }}
+                        />
+                        {part.audio_url && (
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger"
+                            onClick={() => clearAudio(partIndex)}
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                      {part.error && (
+                        <div className="error-message" style={{ color: "red", fontSize: "12px" }}>
+                          {part.error}
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Or Upload Audio File */}
+                  {(!part.audio_url || part.audio_url.startsWith("data:")) && (
+                    <>
+                      <label>Or Upload Audio File</label>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "15px" }}>
+                        <input
+                          type="file"
+                          accept="audio/*"
+                          onChange={(e) => handleAudioUpload(partIndex, e)}
+                        />
+                        {part.audio_url && part.audio_url.startsWith("data:") && (
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger"
+                            onClick={() => clearAudio(partIndex)}
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="questions-section">
@@ -144,6 +295,7 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
                         type="button"
                         className="btn btn-sm btn-outline"
                         onClick={() => addListeningQuestion(partIndex)}
+                        disabled={part.questions.length >= 15}
                       >
                         + Add Question
                       </button>
@@ -195,8 +347,26 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
                                   updateListeningOption(partIndex, questionIndex, optionIndex, e.target.value)
                                 }
                               />
+                              {question.options.length > 3 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-danger"
+                                  onClick={() => removeListeningOption(partIndex, questionIndex, optionIndex)}
+                                >
+                                  ×
+                                </button>
+                              )}
                             </div>
                           ))}
+                          {question.options.length < 5 && (
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline"
+                              onClick={() => addListeningOption(partIndex, questionIndex)}
+                            >
+                              + Add Option
+                            </button>
+                          )}
                         </div>
 
                         <div className="form-group">
@@ -209,7 +379,7 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
                           >
                             <option value="">Select correct answer</option>
                             {question.options.map((option, optionIndex) => (
-                              <option key={optionIndex} value={`${String.fromCharCode(65 + optionIndex)}. ${option}`}>
+                              <option key={optionIndex} value={option}>
                                 {String.fromCharCode(65 + optionIndex)}. {option}
                               </option>
                             ))}
@@ -231,7 +401,7 @@ function ListeningSection({ listeningParts, setListeningParts, maxParts }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default ListeningSection
+export default ListeningSection;

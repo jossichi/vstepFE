@@ -1,41 +1,45 @@
+import React from "react";
+
 function WritingSection({ writingTasks, setWritingTasks, maxParts }) {
   const addWritingTask = () => {
     if (writingTasks.length < maxParts) {
       setWritingTasks([
         ...writingTasks,
         {
-          part: `W_TASK${writingTasks.length + 1}`,
+          part: `W_TASK${writingTasks.length + 1}`, // Giữ nguyên part dưới dạng chuỗi
           prompt: "",
+          sample_answer: "",
         },
-      ])
+      ]);
     }
-  }
+  };
 
   const updateWritingTask = (index, field, value) => {
-    const updatedTasks = [...writingTasks]
-    updatedTasks[index] = { ...updatedTasks[index], [field]: value }
-    setWritingTasks(updatedTasks)
-  }
+    const updatedTasks = [...writingTasks];
+    updatedTasks[index] = { ...updatedTasks[index], [field]: value };
+    setWritingTasks(updatedTasks);
+  };
 
+  // Khôi phục chức năng xóa phần
   const removeWritingTask = (index) => {
-    setWritingTasks(writingTasks.filter((_, i) => i !== index))
-  }
+    setWritingTasks(writingTasks.filter((_, i) => i !== index));
+  };
 
   // Toggle accordion
   const toggleAccordion = (id) => {
-    const element = document.getElementById(id)
+    const element = document.getElementById(id);
     if (element) {
-      element.classList.toggle("active")
+      element.classList.toggle("active");
     }
-  }
+  };
 
   return (
     <div>
       <div className="section-header">
         <h3>Writing Tasks</h3>
-        <button 
-          type="button" 
-          className="btn btn-outline" 
+        <button
+          type="button"
+          className="btn btn-outline"
           onClick={addWritingTask}
           disabled={writingTasks.length >= maxParts}
         >
@@ -51,7 +55,10 @@ function WritingSection({ writingTasks, setWritingTasks, maxParts }) {
         <div className="accordion">
           {writingTasks.map((task, taskIndex) => (
             <div key={taskIndex} className="accordion-item">
-              <div className="accordion-header" onClick={() => toggleAccordion(`writing-task-${taskIndex}`)}>
+              <div
+                className="accordion-header"
+                onClick={() => toggleAccordion(`writing-task-${taskIndex}`)}
+              >
                 <span>
                   Task {taskIndex + 1}: {task.part}
                 </span>
@@ -60,9 +67,10 @@ function WritingSection({ writingTasks, setWritingTasks, maxParts }) {
                 <div className="form-group">
                   <label>Task ID</label>
                   <input
-                    type="text"
+                    type="text" // Đổi lại thành text, cho phép chỉnh sửa
                     value={task.part}
                     onChange={(e) => updateWritingTask(taskIndex, "part", e.target.value)}
+                    style={{ marginBottom: "15px" }}
                   />
                 </div>
 
@@ -75,8 +83,21 @@ function WritingSection({ writingTasks, setWritingTasks, maxParts }) {
                   />
                 </div>
 
+                <div className="form-group">
+                  <label>Sample Answer</label>
+                  <textarea
+                    value={task.sample_answer}
+                    onChange={(e) => updateWritingTask(taskIndex, "sample_answer", e.target.value)}
+                    rows={6}
+                  />
+                </div>
+
                 <div className="form-actions">
-                  <button type="button" className="btn btn-sm btn-danger" onClick={() => removeWritingTask(taskIndex)}>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-danger"
+                    onClick={() => removeWritingTask(taskIndex)}
+                  >
                     Remove Task
                   </button>
                 </div>
@@ -86,7 +107,7 @@ function WritingSection({ writingTasks, setWritingTasks, maxParts }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default WritingSection
+export default WritingSection;

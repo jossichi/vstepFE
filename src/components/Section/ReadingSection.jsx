@@ -1,30 +1,34 @@
+import React from "react";
+
 function ReadingSection({ readingParts, setReadingParts, maxParts }) {
   const addReadingPart = () => {
     if (readingParts.length < maxParts) {
       setReadingParts([
         ...readingParts,
         {
-          part: `R_PART${readingParts.length + 1}`,
+          part: `R_PART${readingParts.length + 1}`, // Giữ nguyên part dưới dạng chuỗi
+          passage_id: "",
           text: "",
           questions: [],
         },
-      ])
+      ]);
     }
-  }
+  };
 
   const updateReadingPart = (index, field, value) => {
-    const updatedParts = [...readingParts]
-    updatedParts[index] = { ...updatedParts[index], [field]: value }
-    setReadingParts(updatedParts)
-  }
+    const updatedParts = [...readingParts];
+    updatedParts[index] = { ...updatedParts[index], [field]: value };
+    setReadingParts(updatedParts);
+  };
 
+  // Khôi phục chức năng xóa phần
   const removeReadingPart = (index) => {
-    setReadingParts(readingParts.filter((_, i) => i !== index))
-  }
+    setReadingParts(readingParts.filter((_, i) => i !== index));
+  };
 
   const addReadingQuestion = (partIndex) => {
-    const updatedParts = [...readingParts]
-    const part = updatedParts[partIndex]
+    const updatedParts = [...readingParts];
+    const part = updatedParts[partIndex];
 
     updatedParts[partIndex] = {
       ...part,
@@ -33,67 +37,97 @@ function ReadingSection({ readingParts, setReadingParts, maxParts }) {
         {
           question_id: `R${partIndex + 1}_Q${String(part.questions.length + 1).padStart(3, "0")}`,
           question_text: "",
-          options: ["", "", "", ""],
+          options: ["", "", ""], // Mặc định 3 lựa chọn
           correct_answer: "",
         },
       ],
-    }
+    };
 
-    setReadingParts(updatedParts)
-  }
+    setReadingParts(updatedParts);
+  };
 
   const updateReadingQuestion = (partIndex, questionIndex, field, value) => {
-    const updatedParts = [...readingParts]
-    const part = updatedParts[partIndex]
-    const questions = [...part.questions]
+    const updatedParts = [...readingParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
 
-    questions[questionIndex] = { ...questions[questionIndex], [field]: value }
-    updatedParts[partIndex] = { ...part, questions }
+    questions[questionIndex] = { ...questions[questionIndex], [field]: value };
+    updatedParts[partIndex] = { ...part, questions };
 
-    setReadingParts(updatedParts)
-  }
+    setReadingParts(updatedParts);
+  };
+
+  const addReadingOption = (partIndex, questionIndex) => {
+    const updatedParts = [...readingParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
+    const question = questions[questionIndex];
+    const options = [...question.options];
+
+    if (options.length < 5) {
+      options.push("");
+      questions[questionIndex] = { ...question, options };
+      updatedParts[partIndex] = { ...part, questions };
+      setReadingParts(updatedParts);
+    }
+  };
+
+  const removeReadingOption = (partIndex, questionIndex, optionIndex) => {
+    const updatedParts = [...readingParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
+    const question = questions[questionIndex];
+    const options = [...question.options];
+
+    if (options.length > 3) {
+      options.splice(optionIndex, 1);
+      questions[questionIndex] = { ...question, options };
+      updatedParts[partIndex] = { ...part, questions };
+      setReadingParts(updatedParts);
+    }
+  };
 
   const updateReadingOption = (partIndex, questionIndex, optionIndex, value) => {
-    const updatedParts = [...readingParts]
-    const part = updatedParts[partIndex]
-    const questions = [...part.questions]
-    const question = questions[questionIndex]
-    const options = [...question.options]
+    const updatedParts = [...readingParts];
+    const part = updatedParts[partIndex];
+    const questions = [...part.questions];
+    const question = questions[questionIndex];
+    const options = [...question.options];
 
-    options[optionIndex] = value
-    questions[questionIndex] = { ...question, options }
-    updatedParts[partIndex] = { ...part, questions }
+    options[optionIndex] = value;
+    questions[questionIndex] = { ...question, options };
+    updatedParts[partIndex] = { ...part, questions };
 
-    setReadingParts(updatedParts)
-  }
+    setReadingParts(updatedParts);
+  };
 
   const removeReadingQuestion = (partIndex, questionIndex) => {
-    const updatedParts = [...readingParts]
-    const part = updatedParts[partIndex]
+    const updatedParts = [...readingParts];
+    const part = updatedParts[partIndex];
 
     updatedParts[partIndex] = {
       ...part,
       questions: part.questions.filter((_, i) => i !== questionIndex),
-    }
+    };
 
-    setReadingParts(updatedParts)
-  }
+    setReadingParts(updatedParts);
+  };
 
   // Toggle accordion
   const toggleAccordion = (id) => {
-    const element = document.getElementById(id)
+    const element = document.getElementById(id);
     if (element) {
-      element.classList.toggle("active")
+      element.classList.toggle("active");
     }
-  }
+  };
 
   return (
     <div>
       <div className="section-header">
         <h3>Reading Sections</h3>
-        <button 
-          type="button" 
-          className="btn btn-outline" 
+        <button
+          type="button"
+          className="btn btn-outline"
           onClick={addReadingPart}
           disabled={readingParts.length >= maxParts}
         >
@@ -109,7 +143,10 @@ function ReadingSection({ readingParts, setReadingParts, maxParts }) {
         <div className="accordion">
           {readingParts.map((part, partIndex) => (
             <div key={partIndex} className="accordion-item">
-              <div className="accordion-header" onClick={() => toggleAccordion(`reading-part-${partIndex}`)}>
+              <div
+                className="accordion-header"
+                onClick={() => toggleAccordion(`reading-part-${partIndex}`)}
+              >
                 <span>
                   Part {partIndex + 1}: {part.part}
                 </span>
@@ -119,12 +156,21 @@ function ReadingSection({ readingParts, setReadingParts, maxParts }) {
                 <div className="form-group">
                   <label>Part ID</label>
                   <input
-                    type="text"
+                    type="text" // Đổi lại thành text, cho phép chỉnh sửa
                     value={part.part}
                     onChange={(e) => updateReadingPart(partIndex, "part", e.target.value)}
+                    style={{ marginBottom: "15px" }}
                   />
                 </div>
-
+                <div className="form-group">
+                  <label>Passage ID</label>
+                  <input
+                    type="text"
+                    value={part.passage_id}
+                    onChange={(e) => updateReadingPart(partIndex, "passage_id", e.target.value)}
+                    style={{ marginBottom: "15px" }}
+                  />
+                </div>
                 <div className="form-group">
                   <label>Reading Text</label>
                   <textarea
@@ -142,6 +188,7 @@ function ReadingSection({ readingParts, setReadingParts, maxParts }) {
                         type="button"
                         className="btn btn-sm btn-outline"
                         onClick={() => addReadingQuestion(partIndex)}
+                        disabled={part.questions.length >= 15}
                       >
                         + Add Question
                       </button>
@@ -193,8 +240,26 @@ function ReadingSection({ readingParts, setReadingParts, maxParts }) {
                                   updateReadingOption(partIndex, questionIndex, optionIndex, e.target.value)
                                 }
                               />
+                              {question.options.length > 3 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-danger"
+                                  onClick={() => removeReadingOption(partIndex, questionIndex, optionIndex)}
+                                >
+                                  ×
+                                </button>
+                              )}
                             </div>
                           ))}
+                          {question.options.length < 5 && (
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline"
+                              onClick={() => addReadingOption(partIndex, questionIndex)}
+                            >
+                              + Add Option
+                            </button>
+                          )}
                         </div>
 
                         <div className="form-group">
@@ -207,7 +272,7 @@ function ReadingSection({ readingParts, setReadingParts, maxParts }) {
                           >
                             <option value="">Select correct answer</option>
                             {question.options.map((option, optionIndex) => (
-                              <option key={optionIndex} value={`${String.fromCharCode(65 + optionIndex)}. ${option}`}>
+                              <option key={optionIndex} value={option}>
                                 {String.fromCharCode(65 + optionIndex)}. {option}
                               </option>
                             ))}
@@ -229,7 +294,7 @@ function ReadingSection({ readingParts, setReadingParts, maxParts }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default ReadingSection
+export default ReadingSection;
