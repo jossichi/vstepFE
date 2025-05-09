@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Layouts/Header";
 import Footer from "./components/Layouts/Footer";
-import RouterComponent from "../src/routers/index.js"; // Import RouterComponent
+import RouterComponent from "../src/routers/index.js";
 
 const App = () => {
   return (

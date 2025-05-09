@@ -1,0 +1,146 @@
+/* General container style */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Header style */
+h2 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Tabs navigation */
+.MuiTabs-root {
+  border-bottom: 1px solid #ccc;
+}
+
+.MuiTab-root {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.MuiTab-root.Mui-selected {
+  color: #0056b3;
+}
+
+/* Form container */
+.form-container {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ReactJson preview section */
+.react-json-container {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Customize the UI of JSON Schema fields */
+.ui-schema .form-field {
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.ui-schema .form-field label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+}
+
+.ui-schema .form-field input,
+.ui-schema .form-field select,
+.ui-schema .form-field textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.ui-schema .form-field textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+/* Styling for buttons and inputs */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+input[type="file"] {
+  border: none;
+  padding: 0;
+}
+
+select {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 4px;
+}
+
+/* Tab-specific content section */
+.tab-content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.tab-content .section-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* General form adjustments */
+textarea {
+  font-size: 1rem;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Responsiveness adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .MuiTab-root {
+    font-size: 0.875rem;
+  }
+
+  .form-container {
+    padding: 10px;
+  }
+
+  .react-json-container {
+    padding: 10px;
+  }
+}
