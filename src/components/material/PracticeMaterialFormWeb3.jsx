@@ -1,741 +1,534 @@
-import { useState } from 'react';
+import React, { useState } from "react";
+import Form from "@rjsf/core";
+import Validator from "@rjsf/validator-ajv8";
+import ReactJson from "react-json-view";
+import uploadMaterial from "../../services/uploadService";
+import { Box, Tabs, Tab, Typography, Paper, Grid } from "@mui/material";
 
-export default function PracticeMaterialFormWeb3() {
-  const initialFormState = {
-    user_id: '',
-    materialData: {
-      material_id: '',
-      level: 'B1',
-      listening: [
-        {
-          part: 'L_PART1',
-          audio_file: '',
-          questions: [
-            {
-              question_id: '',
-              question_text: '',
-              options: ['', '', '', ''],
-              correct_answer: ''
-            }
-          ]
-        }
-      ],
-      reading: [
-        {
-          part: 'R_PART1',
-          text: '',
-          questions: [
-            {
-              question_id: '',
-              question_text: '',
-              options: ['', '', '', ''],
-              correct_answer: ''
-            }
-          ]
-        }
-      ],
-      writing: [
-        {
-          part: 'W_TASK1',
-          prompt: ''
-        }
-      ],
-      speaking: [
-        {
-          part: 'S_TASK1',
-          prompt: ''
-        }
-      ],
-      visibility: 'public',
-      signature: '',
-      status: 'pending',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      attempt_count: 0
-    }
-  };
+import "../../assets/styles/UploadTest.css";
+const initialSchema = {
+  $schema: "http://json-schema.org/draft-07/schema#",
+  title: "Tạo đề ôn VSTEP",
+  type: "object",
+  properties: {
+    level: {
+      type: "string",
+      enum: ["B1", "B2", "C1", "C2"],
+      description: "The difficulty level of the practice material.",
+    },
+    listening: {
+      type: "array",
+      minItems: 3,
+      maxItems: 3,
+      items: {
+        type: "object",
+        properties: {
+          part: { type: "integer", minimum: 1, maximum: 3 },
+          audio_file: {
+            type: "string",
+            contentEncoding: "base64",
+            description: "Base64-encoded audio file uploaded by the user.",
+          },
+          questions: {
+            type: "array",
+            minItems: 1,
+            maxItems: 15,
+            items: {
+              type: "object",
+              properties: {
+                question_id: { type: "string" },
 
-  const [formData, setFormData] = useState(initialFormState);
-  const [activeTab, setActiveTab] = useState('basic');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState('');
-
-  // Handle basic field changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData({
-        ...formData,
-        [parent]: {
-          ...formData[parent],
-          [child]: value
-        }
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
-  };
-
-  // Handle changes for nested listening questions
-  const handleListeningChange = (partIndex, questionIndex, field, value) => {
-    const updatedListening = [...formData.materialData.listening];
-    
-    if (field === 'question_text' || field === 'question_id' || field === 'correct_answer') {
-      updatedListening[partIndex].questions[questionIndex][field] = value;
-    } else if (field.startsWith('option_')) {
-      const optionIndex = parseInt(field.split('_')[1]);
-      updatedListening[partIndex].questions[questionIndex].options[optionIndex] = value;
-    } else if (field === 'audio_file') {
-      updatedListening[partIndex].audio_file = value;
-    } else if (field === 'part') {
-      updatedListening[partIndex].part = value;
-    }
-    
-    setFormData({
-      ...formData,
-      materialData: {
-        ...formData.materialData,
-        listening: updatedListening
-      }
-    });
-  };
-
-  // Handle changes for nested reading questions
-  const handleReadingChange = (partIndex, questionIndex, field, value) => {
-    const updatedReading = [...formData.materialData.reading];
-    
-    if (field === 'question_text' || field === 'question_id' || field === 'correct_answer') {
-      updatedReading[partIndex].questions[questionIndex][field] = value;
-    } else if (field.startsWith('option_')) {
-      const optionIndex = parseInt(field.split('_')[1]);
-      updatedReading[partIndex].questions[questionIndex].options[optionIndex] = value;
-    } else if (field === 'text') {
-      updatedReading[partIndex].text = value;
-    } else if (field === 'part') {
-      updatedReading[partIndex].part = value;
-    }
-    
-    setFormData({
-      ...formData,
-      materialData: {
-        ...formData.materialData,
-        reading: updatedReading
-      }
-    });
-  };
-
-  // Handle changes for writing tasks
-  const handleWritingChange = (index, field, value) => {
-    const updatedWriting = [...formData.materialData.writing];
-    
-    if (field === 'prompt') {
-      updatedWriting[index].prompt = value;
-    } else if (field === 'part') {
-      updatedWriting[index].part = value;
-    }
-    
-    setFormData({
-      ...formData,
-      materialData: {
-        ...formData.materialData,
-        writing: updatedWriting
-      }
-    });
-  };
-
-  // Handle changes for speaking tasks
-  const handleSpeakingChange = (index, field, value) => {
-    const updatedSpeaking = [...formData.materialData.speaking];
-    
-    if (field === 'prompt') {
-      updatedSpeaking[index].prompt = value;
-    } else if (field === 'part') {
-      updatedSpeaking[index].part = value;
-    }
-    
-    setFormData({
-      ...formData,
-      materialData: {
-        ...formData.materialData,
-        speaking: updatedSpeaking
-      }
-    });
-  };
-
-  // Add questions
-  const addQuestion = (section, partIndex) => {
-    const updatedSection = [...formData.materialData[section]];
-    const newQuestion = {
-      question_id: '',
-      question_text: '',
-      options: ['', '', '', ''],
-      correct_answer: ''
-    };
-    
-    updatedSection[partIndex].questions.push(newQuestion);
-    
-    setFormData({
-      ...formData,
-      materialData: {
-        ...formData.materialData,
-        [section]: updatedSection
-      }
-    });
-  };
-
-  // Add part
-  const addPart = (section) => {
-    const updatedSection = [...formData.materialData[section]];
-    
-    let newPart = {};
-    if (section === 'listening') {
-      newPart = {
-        part: `L_PART${updatedSection.length + 1}`,
-        audio_file: '',
-        questions: [
-          {
-            question_id: '',
-            question_text: '',
-            options: ['', '', '', ''],
-            correct_answer: ''
-          }
-        ]
-      };
-    } else if (section === 'reading') {
-      newPart = {
-        part: `R_PART${updatedSection.length + 1}`,
-        text: '',
-        questions: [
-          {
-            question_id: '',
-            question_text: '',
-            options: ['', '', '', ''],
-            correct_answer: ''
-          }
-        ]
-      };
-    } else if (section === 'writing') {
-      newPart = {
-        part: `W_TASK${updatedSection.length + 1}`,
-        prompt: ''
-      };
-    } else if (section === 'speaking') {
-      newPart = {
-        part: `S_TASK${updatedSection.length + 1}`,
-        prompt: ''
-      };
-    }
-    
-    updatedSection.push(newPart);
-    
-    setFormData({
-      ...formData,
-      materialData: {
-        ...formData.materialData,
-        [section]: updatedSection
-      }
-    });
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fetch('http://localhost:10000/api/practice-materials/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+                question_text: { type: "string" },
+                options: {
+                  type: "array",
+                  minItems: 3,
+                  maxItems: 5,
+                  items: { type: "string" },
+                },
+                correct_answer: { type: "string" },
+              },
+              required: [
+                "question_id",
+                "audio_file",
+                "question_text",
+                "options",
+                "correct_answer",
+              ],
+            },
+          },
         },
-        body: JSON.stringify(formData),
-      });
-      
-      if (response.ok) {
-        setMessage('Practice material submitted successfully!');
-        setMessageType('success');
-        setFormData(initialFormState);
-      } else {
-        const errorData = await response.json();
-        setMessage(`Error: ${errorData.message || 'Failed to submit material'}`);
-        setMessageType('error');
-      }
+        required: ["part", "questions"],
+      },
+    },
+    reading: {
+      type: "array",
+      minItems: 4,
+      maxItems: 4,
+      items: {
+        type: "object",
+        properties: {
+          part: { type: "integer", minimum: 1, maximum: 4 },
+          passage_id: { type: "string" },
+          text: { type: "string" },
+          questions: {
+            type: "array",
+            minItems: 1,
+            maxItems: 15,
+            items: {
+              type: "object",
+              properties: {
+                question_id: { type: "string" },
+                question_text: { type: "string" },
+                options: {
+                  type: "array",
+                  minItems: 3,
+                  maxItems: 5,
+                  items: { type: "string" },
+                },
+                correct_answer: { type: "string" },
+              },
+              required: [
+                "question_id",
+                "question_text",
+                "options",
+                "correct_answer",
+              ],
+            },
+          },
+        },
+        required: ["part", "passage_id", "text", "questions"],
+      },
+    },
+    writing: {
+      type: "array",
+      minItems: 2,
+      maxItems: 2,
+      items: {
+        type: "object",
+        properties: {
+          part: { type: "integer", minimum: 1, maximum: 2 },
+          prompt: { type: "string" },
+          sample_answer: { type: "string" },
+        },
+        required: ["part", "prompt", "sample_answer"],
+      },
+    },
+    speaking: {
+      type: "array",
+      minItems: 3,
+      maxItems: 3,
+      items: {
+        type: "object",
+        properties: {
+          part: { type: "integer", minimum: 1, maximum: 3 },
+          prompt: { type: "string" },
+          sample_answer: { type: "string" },
+        },
+        required: ["part", "prompt", "sample_answer"],
+      },
+    },
+  },
+  required: [
+    "material_id",
+    "upload_date",
+    "level",
+    "listening",
+    "reading",
+    "writing",
+    "speaking",
+  ],
+  additionalProperties: false,
+};
+
+const initialUiSchema = {
+  // General settings for the form
+  "ui:order": [
+    "_id",
+    "material_id",
+    "upload_date",
+    "level",
+    "listening",
+    "reading",
+    "writing",
+    "speaking",
+    "visibility",
+    "signature",
+    "attempt_count",
+  ],
+  "ui:options": {
+    submitButtonOptions: {
+      text: "Submit Practice Material", // Custom text for the submit button
+    },
+  },
+
+  // Individual field configurations
+  _id: {
+    "ui:widget": "text", // Simple text input for the unique identifier
+    "ui:options": {
+      label: "Document ID", // Custom label for the field
+      readonly: true, // Make it read-only as it's auto-generated
+    },
+  },
+  material_id: {
+    "ui:widget": "text", // Simple text input for the material identifier
+    "ui:options": {
+      label: "Material ID", // Custom label for the field
+    },
+  },
+  upload_date: {
+    "ui:widget": "alt-datetime", // Use a datetime picker for the upload date
+    "ui:options": {
+      label: "Upload Date and Time", // Custom label for the field
+    },
+  },
+  level: {
+    "ui:widget": "select", // Dropdown select for difficulty level
+    "ui:options": {
+      label: "Difficulty Level", // Custom label for the field
+    },
+  },
+  listening: {
+    "ui:options": {
+      label: "Listening Section", // Custom label for the section
+    },
+    items: {
+      part: {
+        "ui:widget": "updown", // Up-down stepper for part number
+        "ui:options": {
+          label: "Part Number", // Custom label for the field
+        },
+      },
+      audio_file: {
+        "ui:widget": "file", // File upload widget for audio files
+        "ui:options": {
+          label: "Upload Audio File", // Custom label for the field
+        },
+      },
+      questions: {
+        items: {
+          question_id: {
+            "ui:widget": "text", // Text input for question ID
+            "ui:options": {
+              label: "Question ID", // Custom label for the field
+            },
+          },
+
+          question_text: {
+            "ui:widget": "textarea", // Textarea for question text
+            "ui:options": {
+              label: "Question Text", // Custom label for the field
+              rows: 3, // Set number of rows for the textarea
+            },
+          },
+          options: {
+            items: {
+              "ui:widget": "text", // Text input for each option
+              "ui:options": {
+                label: "Option", // Custom label for the field
+              },
+            },
+          },
+          correct_answer: {
+            "ui:widget": "text", // Text input for correct answer
+            "ui:options": {
+              label: "Correct Answer", // Custom label for the field
+            },
+          },
+        },
+      },
+    },
+  },
+  reading: {
+    "ui:options": {
+      label: "Reading Section", // Custom label for the section
+    },
+    items: {
+      part: {
+        "ui:widget": "updown", // Up-down stepper for part number
+        "ui:options": {
+          label: "Part Number", // Custom label for the field
+        },
+      },
+      passage_id: {
+        "ui:widget": "text", // Text input for passage ID
+        "ui:options": {
+          label: "Passage ID", // Custom label for the field
+        },
+      },
+      text: {
+        "ui:widget": "textarea", // Textarea for passage text
+        "ui:options": {
+          label: "Passage Text", // Custom label for the field
+          rows: 5, // Set number of rows for the textarea
+        },
+      },
+      questions: {
+        items: {
+          question_id: {
+            "ui:widget": "text", // Text input for question ID
+            "ui:options": {
+              label: "Question ID", // Custom label for the field
+            },
+          },
+          question_text: {
+            "ui:widget": "textarea", // Textarea for question text
+            "ui:options": {
+              label: "Question Text", // Custom label for the field
+              rows: 3, // Set number of rows for the textarea
+            },
+          },
+          options: {
+            items: {
+              "ui:widget": "text", // Text input for each option
+              "ui:options": {
+                label: "Option", // Custom label for the field
+              },
+            },
+          },
+          correct_answer: {
+            "ui:widget": "text", // Text input for correct answer
+            "ui:options": {
+              label: "Correct Answer", // Custom label for the field
+            },
+          },
+        },
+      },
+    },
+  },
+  writing: {
+    "ui:options": {
+      label: "Writing Section", // Custom label for the section
+    },
+    items: {
+      part: {
+        "ui:widget": "updown", // Up-down stepper for part number
+        "ui:options": {
+          label: "Part Number", // Custom label for the field
+        },
+      },
+      prompt: {
+        "ui:widget": "textarea", // Textarea for writing prompt
+        "ui:options": {
+          label: "Prompt", // Custom label for the field
+          rows: 4, // Set number of rows for the textarea
+        },
+      },
+      sample_answer: {
+        "ui:widget": "textarea", // Textarea for sample answer
+        "ui:options": {
+          label: "Sample Answer", // Custom label for the field
+          rows: 6, // Set number of rows for the textarea
+        },
+      },
+    },
+  },
+  speaking: {
+    "ui:options": {
+      label: "Speaking Section", // Custom label for the section
+    },
+    items: {
+      part: {
+        "ui:widget": "updown", // Up-down stepper for part number
+        "ui:options": {
+          label: "Part Number", // Custom label for the field
+        },
+      },
+      prompt: {
+        "ui:widget": "textarea", // Textarea for speaking prompt
+        "ui:options": {
+          label: "Prompt", // Custom label for the field
+          rows: 4, // Set number of rows for the textarea
+        },
+      },
+      sample_answer: {
+        "ui:widget": "textarea", // Textarea for sample answer
+        "ui:options": {
+          label: "Sample Answer", // Custom label for the field
+          rows: 6, // Set number of rows for the textarea
+        },
+      },
+    },
+  },
+  visibility: {
+    "ui:widget": "radio", // Radio buttons for visibility status
+    "ui:options": {
+      label: "Visibility Status", // Custom label for the field
+    },
+  },
+  signature: {
+    "ui:widget": "text", // Text input for digital signature
+    "ui:options": {
+      label: "Digital Signature", // Custom label for the field
+    },
+  },
+  attempt_count: {
+    "ui:widget": "updown", // Up-down stepper for attempt count
+    "ui:options": {
+      label: "Attempt Count", // Custom label for the field
+    },
+  },
+};
+
+const PracticeMaterialFormWeb3 = () => {
+  const [formData, setFormData] = useState({});
+  const [uiSchema, setUiSchema] = useState(initialUiSchema);
+  const [tab, setTab] = useState(0);
+  const [schema, setSchema] = useState(initialSchema); // Sử dụng initialSchema thay vì setSchema
+
+  const handleSubmit = async ({ formData }) => {
+    try {
+      const response = await uploadMaterial(formData);
+      alert(
+        "Successfully uploaded material: " + JSON.stringify(response, null, 2)
+      );
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
-      setMessageType('error');
-    } finally {
-      setLoading(false);
+      alert("Failed to upload material.");
     }
+  };
+
+  const getSectionName = (tabIndex) => {
+    switch (tabIndex) {
+      case 0:
+        return "listening";
+      case 1:
+        return "reading";
+      case 2:
+        return "writing";
+      case 3:
+        return "speaking";
+      default:
+        return "listening";
+    }
+  };
+
+  const currentSection = getSectionName(tab);
+
+  // Cập nhật filteredSchema khi schema thay đổi
+  const filteredSchema = {
+    ...schema,
+    properties: {
+      [currentSection]: schema.properties[currentSection],
+    },
+    required: schema.required.includes(currentSection) ? [currentSection] : [],
+  };
+
+  const allSections = ["listening", "reading", "writing", "speaking"];
+  const filteredUiSchema = {
+    ...uiSchema,
+    ...Object.fromEntries(
+      allSections.map((section) => [
+        section,
+        section === currentSection
+          ? uiSchema[section]
+          : { "ui:widget": () => null },
+      ])
+    ),
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-center">Practice Material Form Web3</h1>
-      
-      {message && (
-        <div className={`p-4 mb-4 rounded ${messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-          {message}
-        </div>
-      )}
-      
-      {/* Navigation Tabs */}
-      <div className="flex border-b mb-6">
-        <button 
-          onClick={() => setActiveTab('basic')}
-          className={`py-2 px-4 ${activeTab === 'basic' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
-        >
-          Basic Info
-        </button>
-        <button 
-          onClick={() => setActiveTab('listening')}
-          className={`py-2 px-4 ${activeTab === 'listening' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
-        >
-          Listening
-        </button>
-        <button 
-          onClick={() => setActiveTab('reading')}
-          className={`py-2 px-4 ${activeTab === 'reading' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
-        >
-          Reading
-        </button>
-        <button 
-          onClick={() => setActiveTab('writing')}
-          className={`py-2 px-4 ${activeTab === 'writing' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
-        >
-          Writing
-        </button>
-        <button 
-          onClick={() => setActiveTab('speaking')}
-          className={`py-2 px-4 ${activeTab === 'speaking' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
-        >
-          Speaking
-        </button>
-        <button 
-          onClick={() => setActiveTab('preview')}
-          className={`py-2 px-4 ${activeTab === 'preview' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
-        >
-          Preview
-        </button>
+    <div className="container mt-4">
+      <h2>Practice Material Form Web3</h2>
+
+      {/* Tabs */}
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={tab}
+          onChange={(e, newValue) => setTab(newValue)}
+          aria-label="Tabs">
+          <Tab label="🎧 Listening" />
+          <Tab label="📖 Reading" />
+          <Tab label="✍️ Writing" />
+          <Tab label="🗣️ Speaking" />
+        </Tabs>
+      </Box>
+
+      {/* Schema View */}
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={12} md={6}>
+          <Paper elevation={3} sx={{ p: 2, borderRadius: "8px" }}>
+            <Typography variant="h6">Xem JSON Schema</Typography>
+            <ReactJson
+              src={filteredSchema}
+              name={false}
+              collapsed={false}
+              enableClipboard={true}
+              displayDataTypes={false}
+              theme="monokai"
+              onEdit={(edit) => setSchema(edit.updated_src)} // Cập nhật schema khi chỉnh sửa
+              onAdd={(add) => setSchema(add.updated_src)}
+              onDelete={(del) => setSchema(del.updated_src)}
+            />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper elevation={3} sx={{ p: 2, borderRadius: "8px" }}>
+            <Typography variant="h6">Xem UI Schema</Typography>
+            <ReactJson
+              src={uiSchema}
+              onEdit={(edit) => setUiSchema(edit.updated_src)} // Cập nhật uiSchema khi chỉnh sửa
+              onAdd={(add) => setUiSchema(add.updated_src)}
+              onDelete={(del) => setUiSchema(del.updated_src)}
+              name={false}
+              collapsed={false}
+              theme="monokai"
+            />
+          </Paper>
+        </Grid>
+      </Grid>
+
+      {/* Form */}
+      <div className="form-container" style={{ marginTop: "2rem" }}>
+        <Form
+          schema={filteredSchema}
+          uiSchema={filteredUiSchema}
+          formData={formData}
+          onChange={(e) => setFormData(e.formData)}
+          onSubmit={handleSubmit}
+          validator={Validator}
+        />
       </div>
-      
-      {/* Tab Content */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Info Tab */}
-        {activeTab === 'basic' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                User ID
-              </label>
-              <input
-                type="text"
-                name="user_id"
-                value={formData.user_id}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Material ID
-              </label>
-              <input
-                type="text"
-                name="materialData.material_id"
-                value={formData.materialData.material_id}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Level
-              </label>
-              <select
-                name="materialData.level"
-                value={formData.materialData.level}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="A1">A1</option>
-                <option value="A2">A2</option>
-                <option value="B1">B1</option>
-                <option value="B2">B2</option>
-                <option value="C1">C1</option>
-                <option value="C2">C2</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Visibility
-              </label>
-              <select
-                name="materialData.visibility"
-                value={formData.materialData.visibility}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-                <option value="shared">Shared</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Status
-              </label>
-              <select
-                name="materialData.status"
-                value={formData.materialData.status}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="pending">Pending</option>
-                <option value="active">Active</option>
-                <option value="draft">Draft</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Signature
-              </label>
-              <input
-                type="text"
-                name="materialData.signature"
-                value={formData.materialData.signature}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-        )}
-        
-        {/* Listening Tab */}
-        {activeTab === 'listening' && (
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Listening Sections</h2>
-            {formData.materialData.listening.map((part, partIndex) => (
-              <div key={partIndex} className="mb-6 p-4 border rounded-md">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Part Name
-                    </label>
-                    <input
-                      type="text"
-                      value={part.part}
-                      onChange={(e) => handleListeningChange(partIndex, null, 'part', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Audio File URL
-                    </label>
-                    <input
-                      type="text"
-                      value={part.audio_file}
-                      onChange={(e) => handleListeningChange(partIndex, null, 'audio_file', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-                
-                <h3 className="text-md font-medium mb-2">Questions</h3>
-                {part.questions.map((question, questionIndex) => (
-                  <div key={questionIndex} className="mb-4 p-4 bg-gray-50 rounded-md">
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Question ID
-                        </label>
-                        <input
-                          type="text"
-                          value={question.question_id}
-                          onChange={(e) => handleListeningChange(partIndex, questionIndex, 'question_id', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Question Text
-                        </label>
-                        <input
-                          type="text"
-                          value={question.question_text}
-                          onChange={(e) => handleListeningChange(partIndex, questionIndex, 'question_text', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Options
-                        </label>
-                        {question.options.map((option, optionIndex) => (
-                          <input
-                            key={optionIndex}
-                            type="text"
-                            value={option}
-                            onChange={(e) => handleListeningChange(partIndex, questionIndex, `option_${optionIndex}`, e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
-                            placeholder={`Option ${optionIndex + 1}`}
-                          />
-                        ))}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Correct Answer
-                        </label>
-                        <input
-                          type="text"
-                          value={question.correct_answer}
-                          onChange={(e) => handleListeningChange(partIndex, questionIndex, 'correct_answer', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => addQuestion('listening', partIndex)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  Add Question
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => addPart('listening')}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              Add Listening Part
-            </button>
-          </div>
-        )}
-        
-        {/* Reading Tab */}
-        {activeTab === 'reading' && (
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Reading Sections</h2>
-            {formData.materialData.reading.map((part, partIndex) => (
-              <div key={partIndex} className="mb-6 p-4 border rounded-md">
-                <div className="grid grid-cols-1 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Part Name
-                    </label>
-                    <input
-                      type="text"
-                      value={part.part}
-                      onChange={(e) => handleReadingChange(partIndex, null, 'part', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Reading Text
-                    </label>
-                    <textarea
-                      value={part.text}
-                      onChange={(e) => handleReadingChange(partIndex, null, 'text', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      rows="6"
-                    />
-                  </div>
-                </div>
-                
-                <h3 className="text-md font-medium mb-2">Questions</h3>
-                {part.questions.map((question, questionIndex) => (
-                  <div key={questionIndex} className="mb-4 p-4 bg-gray-50 rounded-md">
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Question ID
-                        </label>
-                        <input
-                          type="text"
-                          value={question.question_id}
-                          onChange={(e) => handleReadingChange(partIndex, questionIndex, 'question_id', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Question Text
-                        </label>
-                        <input
-                          type="text"
-                          value={question.question_text}
-                          onChange={(e) => handleReadingChange(partIndex, questionIndex, 'question_text', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Options
-                        </label>
-                        {question.options.map((option, optionIndex) => (
-                          <input
-                            key={optionIndex}
-                            type="text"
-                            value={option}
-                            onChange={(e) => handleReadingChange(partIndex, questionIndex, `option_${optionIndex}`, e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
-                            placeholder={`Option ${optionIndex + 1}`}
-                          />
-                        ))}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Correct Answer
-                        </label>
-                        <input
-                          type="text"
-                          value={question.correct_answer}
-                          onChange={(e) => handleReadingChange(partIndex, questionIndex, 'correct_answer', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => addQuestion('reading', partIndex)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  Add Question
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => addPart('reading')}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              Add Reading Part
-            </button>
-          </div>
-        )}
-        
-        {/* Writing Tab */}
-        {activeTab === 'writing' && (
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Writing Tasks</h2>
-            {formData.materialData.writing.map((task, index) => (
-              <div key={index} className="mb-6 p-4 border rounded-md">
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Task Name
-                    </label>
-                    <input
-                      type="text"
-                      value={task.part}
-                      onChange={(e) => handleWritingChange(index, 'part', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Prompt
-                    </label>
-                    <textarea
-                      value={task.prompt}
-                      onChange={(e) => handleWritingChange(index, 'prompt', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      rows="6"
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => addPart('writing')}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              Add Writing Task
-            </button>
-          </div>
-        )}
-        
-        {/* Speaking Tab */}
-        {activeTab === 'speaking' && (
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Speaking Tasks</h2>
-            {formData.materialData.speaking.map((task, index) => (
-              <div key={index} className="mb-6 p-4 border rounded-md">
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Task Name
-                    </label>
-                    <input
-                      type="text"
-                      value={task.part}
-                      onChange={(e) => handleSpeakingChange(index, 'part', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Prompt
-                    </label>
-                    <textarea
-                      value={task.prompt}
-                      onChange={(e) => handleSpeakingChange(index, 'prompt', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      rows="6"
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => addPart('speaking')}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              Add Speaking Task
-            </button>
-          </div>
-        )}
-        
-        {/* Preview Tab */}
-        {activeTab === 'preview' && (
-          <div className="bg-gray-50 p-4 rounded-md">
-            <h2 className="text-lg font-semibold mb-2">Preview</h2>
-            <pre className="whitespace-pre-wrap text-xs bg-gray-100 p-4 rounded overflow-auto max-h-96">
-              {JSON.stringify(formData, null, 2)}
-            </pre>
-          </div>
-        )}
-        
-        {/* Submit Button */}
-        <div className="flex justify-end pt-6 mt-6 border-t border-gray-200">
-          <button
-            type="submit"
-            disabled={loading}
-            className={`px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-          >
-            {loading ? 'Submitting...' : 'Submit Practice Material'}
-          </button>
-        </div>
-      </form>
+
+      {/* Preview Data */}
+      <div style={{ marginTop: "2rem" }}>
+        <h4>🔍 Xem trước dữ liệu sẽ gửi:</h4>
+        <ReactJson
+          src={formData}
+          collapsed={2}
+          name={false}
+          enableClipboard={true}
+          displayDataTypes={false}
+        />
+      </div>
+
+      {/* Editing Sections */}
+      {tab === 4 && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6">Chỉnh sửa UI Schema</Typography>
+          <ReactJson
+            src={uiSchema}
+            onEdit={(edit) => setUiSchema(edit.updated_src)}
+            onAdd={(add) => setUiSchema(add.updated_src)}
+            onDelete={(del) => setUiSchema(del.updated_src)}
+            name={false}
+            collapsed={false}
+          />
+        </Box>
+      )}
+      {tab === 5 && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6">Chỉnh sửa JSON Schema</Typography>
+          <ReactJson
+            src={schema}
+            onEdit={(edit) => setSchema(edit.updated_src)} // Cập nhật schema khi chỉnh sửa
+            onAdd={(add) => setSchema(add.updated_src)}
+            onDelete={(del) => setSchema(del.updated_src)}
+            name={false}
+            collapsed={false}
+          />
+        </Box>
+      )}
     </div>
   );
-}
+};
+
+export default PracticeMaterialFormWeb3;
