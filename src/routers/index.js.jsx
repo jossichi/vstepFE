@@ -6,6 +6,7 @@ import CreateCards from "../components/CreateCards";
 import ProfilePage from "../pages/ProfilePage";
 import CreateTestForm from "../pages/CreateTestForm";
 import CheckboxComponent from "../components/material/CheckboxComponent";
+import VocabularyForm from "../components/Vocabulary/VocabularyForm";
 
 const RouterComponent = () => {
   return (
@@ -18,6 +19,7 @@ const RouterComponent = () => {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/upload-test" element={<UploadTest />} />
       <Route path="/checkbox-component" element={<CheckboxComponent />} />
+      <Route path="/vocabulary-form" element={<VocabularyForm />} />
     </Routes>
   );
 };

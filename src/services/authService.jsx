@@ -1,53 +1,45 @@
-// Chỉ cần cập nhật authService.js như sau:
-
 const BASE_URL = process.env.REACT_APP_API_URL + "/api";
 
 // Helper: Lấy user từ localStorage
 const getUserFromStorage = () => {
   try {
-    // Đổi từ localStorage sang sessionStorage
-    const token = sessionStorage.getItem("token");
-    const userId = sessionStorage.getItem("user_id");
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("user_id");
 
     if (!token || !userId) {
-      console.error("Thiếu token hoặc user_id trong sessionStorage.");
+      console.error("Thiếu token hoặc user_id trong localStorage.");
       return null;
     }
 
     // Kiểm tra dữ liệu người dùng
-    const userData = sessionStorage.getItem("user_data");
+    const userData = localStorage.getItem("user_data");
     if (userData) {
       return JSON.parse(userData);
     } else {
-      console.error("Không tìm thấy dữ liệu người dùng trong sessionStorage.");
+      console.error("Không tìm thấy dữ liệu người dùng trong localStorage.");
       return null;
     }
   } catch (error) {
-    console.error("Lỗi khi lấy dữ liệu từ sessionStorage:", error);
+    console.error("Lỗi khi lấy dữ liệu từ localStorage:", error);
     return null;
   }
 };
 
-// Helper: Lưu user data vào sessionStorage
+// Helper: Lưu user data vào localStorage
 const saveUserDataToLocalStorage = (user, token) => {
   if (!user || !token) {
-    console.warn("Invalid data. Không thể lưu dữ liệu vào sessionStorage.");
+    console.warn("Invalid data. Không thể lưu dữ liệu vào localStorage.");
     return;
   }
 
   try {
-    // Lưu thông tin người dùng và token vào sessionStorage thay vì localStorage
-    sessionStorage.setItem("token", token);
-    sessionStorage.setItem("user_id", user.user_id); // Lưu user_id
-    
-    // Nếu có user_data, cũng lưu vào sessionStorage
-    if (user) {
-      sessionStorage.setItem("user_data", JSON.stringify(user));
-    }
+    // Lưu thông tin người dùng và token vào localStorage
+    localStorage.setItem("token", token);
+    localStorage.setItem("user_id", user.user_id); // Lưu user_id
 
-    console.log("Dữ liệu người dùng đã được lưu vào sessionStorage.");
+    console.log("Dữ liệu người dùng đã được lưu vào localStorage.");
   } catch (error) {
-    console.error("Lỗi khi lưu dữ liệu vào sessionStorage:", error);
+    console.error("Lỗi khi lưu dữ liệu vào localStorage:", error);
   }
 };
 
@@ -77,7 +69,7 @@ const loginWithQR = async (formData) => {
       throw new Error("Dữ liệu trả về không hợp lệ. Vui lòng kiểm tra lại.");
     }
 
-    // Lưu thông tin người dùng và token vào sessionStorage
+    // Lưu thông tin người dùng và token vào localStorage
     saveUserDataToLocalStorage({ user_id: data.user_id }, data.token);
 
     console.log("User logged in successfully.");
@@ -92,9 +84,9 @@ const loginWithQR = async (formData) => {
 
 // Logout
 const logout = async () => {
-  // Xóa tất cả dữ liệu từ sessionStorage
-  sessionStorage.clear();
-  console.log("User logged out and sessionStorage cleared.");
+  // Clear all data from localStorage
+  localStorage.clear();
+  console.log("User logged out and localStorage cleared.");
   return true;
 };
 
