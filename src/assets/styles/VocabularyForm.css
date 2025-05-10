@@ -1,0 +1,472 @@
+/* Scoped CSS for VocabularyForm */
+.vocabulary-form-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #f9fafb;
+  border-radius: 12px;
+}
+
+/* Styles for headings */
+.vocabulary-form-container .form-title {
+  margin-bottom: 24px;
+  color: #1f2a44;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.vocabulary-form-container .section-title {
+  color: #1f2a44;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.vocabulary-form-container .main-section-header .section-title {
+  text-align: center;
+}
+
+.vocabulary-form-container .card-title {
+  color: #1f2a44;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.vocabulary-form-container .related-title {
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Form styles */
+.vocabulary-form-container .vocabulary-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Card styles */
+.vocabulary-form-container .word-entry-card,
+.vocabulary-form-container .main-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  transition: box-shadow 0.2s ease;
+}
+
+.vocabulary-form-container .word-entry-card:hover,
+.vocabulary-form-container .main-section:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styles */
+.vocabulary-form-container .card-header,
+.vocabulary-form-container .section-header,
+.vocabulary-form-container .related-word-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.vocabulary-form-container .main-section-header {
+  margin-bottom: 24px;
+}
+
+/* Form group and row */
+.vocabulary-form-container .form-group {
+  margin-bottom: 16px;
+}
+
+.vocabulary-form-container .form-row {
+  display: flex;
+  gap: 32px; /* Tăng gap để trường Word * và Part of Speech cách xa hơn */
+  margin-bottom: 16px;
+}
+
+.vocabulary-form-container .form-row .form-group {
+  flex: 1;
+}
+
+/* Label and input */
+.vocabulary-form-container .form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.vocabulary-form-container .form-input,
+.vocabulary-form-container .form-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vocabulary-form-container .form-input:focus,
+.vocabulary-form-container .form-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.vocabulary-form-container .input-error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.vocabulary-form-container .error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 6px;
+}
+
+/* Main word section */
+.vocabulary-form-container .main-word-card {
+  margin-bottom: 24px;
+  border-left: 4px solid #3b82f6;
+  padding-left: 32px;
+  padding-right: 24px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+/* Related words container */
+.vocabulary-form-container .related-words-container {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed #e5e7eb;
+}
+
+/* Collapsible sections */
+.vocabulary-form-container .collapsible-section {
+  margin-bottom: 12px;
+}
+
+.vocabulary-form-container .collapsible-button {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.vocabulary-form-container .collapsible-icon {
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  width: 20px;
+  text-align: center;
+}
+
+.vocabulary-form-container .collapsible-button.expanded {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+}
+
+.vocabulary-form-container .collapsible-content {
+  border: 1px solid #d1d5db;
+  border-top: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 16px;
+  background-color: #ffffff;
+}
+
+.vocabulary-form-container .count-badge {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  background-color: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Family words section */
+.vocabulary-form-container .family-words-section .collapsible-button {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
+.vocabulary-form-container .family-words-section .collapsible-button:hover,
+.vocabulary-form-container .family-words-section .collapsible-button.expanded {
+  background-color: #ecfdf5;
+}
+
+.vocabulary-form-container .family-words-section .collapsible-content {
+  border-color: #16a34a;
+}
+
+/* Synonyms section */
+.vocabulary-form-container .synonyms-section .collapsible-button {
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.vocabulary-form-container .synonyms-section .collapsible-button:hover,
+.vocabulary-form-container .synonyms-section .collapsible-button.expanded {
+  background-color: #fffbeb;
+}
+
+.vocabulary-form-container .synonyms-section .collapsible-content {
+  border-color: #f59e0b;
+}
+
+/* Antonyms section */
+.vocabulary-form-container .antonyms-section .collapsible-button {
+  color: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
+.vocabulary-form-container .antonyms-section .collapsible-button:hover,
+.vocabulary-form-container .antonyms-section .collapsible-button.expanded {
+  background-color: #f5f3ff;
+}
+
+.vocabulary-form-container .antonyms-section .collapsible-content {
+  border-color: #8b5cf6;
+}
+
+/* Related word entries */
+.vocabulary-form-container .related-word-entry {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.vocabulary-form-container .family_word-entry {
+  border-left: 3px solid #16a34a;
+}
+
+.vocabulary-form-container .synonyms-entry {
+  border-left: 3px solid #f59e0b;
+}
+
+.vocabulary-form-container .antonyms-entry {
+  border-left: 3px solid #8b5cf6;
+}
+
+.vocabulary-form-container .related-words-list {
+  margin-bottom: 16px;
+}
+
+.vocabulary-form-container .empty-message {
+  text-align: center;
+  padding: 16px;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+/* Buttons */
+.vocabulary-form-container .action-button,
+.vocabulary-form-container .add-related-button,
+.vocabulary-form-container .add-word-button,
+.vocabulary-form-container .submit-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vocabulary-form-container .action-button:hover,
+.vocabulary-form-container .add-related-button:hover,
+.vocabulary-form-container .add-word-button:hover,
+.vocabulary-form-container .submit-button:hover {
+  transform: translateY(-1px);
+}
+
+.vocabulary-form-container .action-button {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+  border: 1px solid #d1d5db;
+}
+
+.vocabulary-form-container .action-button:hover {
+  background-color: #e5e7eb;
+}
+
+.vocabulary-form-container .add-sentence-button {
+  font-size: 0.875rem;
+}
+
+.vocabulary-form-container .add-related-button {
+  width: 100%;
+  padding: 12px;
+}
+
+.vocabulary-form-container .family_word-button {
+  background-color: #ecfdf5;
+  color: #16a34a;
+  border: 1px dashed #16a34a;
+}
+
+.vocabulary-form-container .family_word-button:hover {
+  background-color: #d1fae5;
+}
+
+.vocabulary-form-container .synonyms-button {
+  background-color: #fffbeb;
+  color: #f59e0b;
+  border: 1px dashed #f59e0b;
+}
+
+.vocabulary-form-container .synonyms-button:hover {
+  background-color: #fef3c7;
+}
+
+.vocabulary-form-container .antonyms-button {
+  background-color: #f5f3ff;
+  color: #8b5cf6;
+  border: 1px dashed #8b5cf6;
+}
+
+.vocabulary-form-container .antonyms-button:hover {
+  background-color: #ede9fe;
+}
+
+.vocabulary-form-container .add-word-button {
+  width: 100%;
+  padding: 14px;
+  background-color: #f3f4f6;
+  color: #3b82f6;
+  border: 1px dashed #3b82f6;
+  margin-top: 12px;
+}
+
+.vocabulary-form-container .add-word-button:hover {
+  background-color: #e5e7eb;
+}
+
+.vocabulary-form-container .plus-icon {
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.vocabulary-form-container .submit-button {
+  background-color: #3b82f6;
+  color: white;
+  padding: 14px;
+  font-size: 1rem;
+  margin-top: 12px;
+}
+
+.vocabulary-form-container .submit-button:hover {
+  background-color: #2563eb;
+}
+
+.vocabulary-form-container .submit-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.vocabulary-form-container .icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ef4444;
+}
+
+.vocabulary-form-container .trash-icon {
+  font-size: 1.25rem;
+}
+
+/* Example sentences */
+.vocabulary-form-container .example-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.vocabulary-form-container .example-sentence {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* Message */
+.vocabulary-form-container .message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.vocabulary-form-container .message.success {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.vocabulary-form-container .message.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #f87171;
+}
+
+.vocabulary-form-container .message.error h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* Spinner for submit button */
+.vocabulary-form-container .spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .vocabulary-form-container .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

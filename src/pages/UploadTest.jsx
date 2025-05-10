@@ -3,7 +3,7 @@ import Form from "@rjsf/core";
 import Validator from "@rjsf/validator-ajv8";
 import ReactJson from "react-json-view";
 import uploadMaterial from "../services/uploadService";
-import { Box, Tabs, Tab, Typography, Paper, Grid, Button } from "@mui/material";
+import { Box, Tabs, Tab, Typography, Paper, Grid } from "@mui/material";
 
 import "../assets/styles/UploadTest.css";
 const initialSchema = {

@@ -183,3 +183,8 @@
     box-shadow: none;
   }
 }
+
+/* Add padding to the body to prevent overlap with fixed navbar */
+body {
+  padding-top: 90px; /* Adjust based on the actual height of the navbar */
+}
